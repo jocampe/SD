@@ -6,11 +6,11 @@ Distributed Systems 2019-2020, 2nd semester project
 ## Authors
 
 *(fill-in line below with group identifier e.g. A07 or T22; and then delete this line)*  
-**Group CXX**
+**Group A07**
 
 ### Code identification
 
-In all the source files (including POMs), please replace __A07__ with your group identifier.  
+In all the source files (including POMs), please replace __CXX__ with your group identifier.  
 The group identifier is composed by Campus - A (Alameda) or T (Tagus) - and number - always with two digits.  
 This change is important for code dependency management, to make sure that your code runs using the correct components and not someone else's.
 
