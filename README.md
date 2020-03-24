@@ -10,7 +10,7 @@ Distributed Systems 2019-2020, 2nd semester project
 
 ### Code identification
 
-In all the source files (including POMs), please replace __CXX__ with your group identifier.  
+In all the source files (including POMs), please replace __A07__ with your group identifier.  
 The group identifier is composed by Campus - A (Alameda) or T (Tagus) - and number - always with two digits.  
 This change is important for code dependency management, to make sure that your code runs using the correct components and not someone else's.
 
@@ -20,7 +20,7 @@ This change is important for code dependency management, to make sure that your 
 
 | Number | Name              | User                             | Email                               |
 | -------|-------------------|----------------------------------| ------------------------------------|
-| 11111  | Alice Distributed | <https://github.com/AliceUser>   | <mailto:alice@tecnico.ulisboa.pt>   |
+| 79690  | Tomás Zaki     | <https://github.com/Zakovich>   | <tomas.zaki@tecnico.ulisboa.pt>   |
 | 22222  | Bob Systems       | <https://github.com/BobUser>     | <mailto:bob@tecnico.ulisboa.pt>     |
 | 33333  | Charlie Rules     | <https://github.com/CharlieUser> | <mailto:charlie@tecnico.ulisboa.pt> |
 
