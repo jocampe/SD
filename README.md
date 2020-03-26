@@ -28,12 +28,12 @@ This change is important for code dependency management, to make sure that your 
 | Task set | To-Do                         | Leader              |
 | ---------|-------------------------------| --------------------|
 | core     | protocol buffers, silo-client | _(whole team)_      |
-| T1       | cam_join, cam_info, eye       | _Alice Distributed_ |
-| T2       | report, spotter               | _Bob Systems_       |
+| T1       | cam_join, cam_info, eye       | _Tomás Zaki_ |
+| T2       | report, spotter               | _Francisco Seixas_       |
 | T3       | track, trackMatch, trace      | Joao Pedro          |
 | T4       | test T1                       | Joao Pedro	         |
-| T5       | test T2                       | _Alice Distributed_ |
-| T6       | test T3                       | _Bob Systems_       |
+| T5       | test T2                       | _Tomás Zaki_ |
+| T6       | test T3                       | _Francisco Seixas_       |
 
 
 ## Getting Started
