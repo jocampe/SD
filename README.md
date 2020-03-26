@@ -20,7 +20,7 @@ This change is important for code dependency management, to make sure that your 
 | -------|-------------------|----------------------------------| ------------------------------------|
 | 79690  | Tomás Zaki     | <https://github.com/Zakovich>   | <tomas.zaki@tecnico.ulisboa.pt>   |
 | 83462  | Francisco Seixas       | <https://github.com/Seixaaas>     | <franscisco.m.seixas@tecnico.ulisboa.pt>     |
-| 85320  | Joao Pedro     | https://jocampe@github.com | joao.nuno.pedro@tecnico.ulisboa.pt |
+| 85320  | Joao Pedro     | https://github.com/Jocampe | joao.nuno.pedro@tecnico.ulisboa.pt |
 
 ### Task leaders
 
