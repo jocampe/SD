@@ -4,3 +4,103 @@
 syntax = "proto3";
 package pt.tecnico.sauron.silo.grpc;
 
+import "google/protobuf/timestamp.proto";
+
+//cam_join - regista uma camera, recebe nome e coordenadas
+
+message CamJoinRequest {
+	string name = 1;
+	double coordinates = 2;
+}
+
+message CamJoinResponse {
+}
+
+//cam_info - recebe nome, devolve coordenadas
+
+message CamInfoRequest {
+	string name = 1;
+}
+
+message CamInfoResponse {
+	message Coordinates {
+		double lat = 1;
+		double lon = 2;
+	}
+	Coordinates coordinates = 1;
+}
+
+//report - recebe o nome da camera, um conjunto de observacoes, e os dados correspondentes
+
+message ReportRequest {
+	string name = 1;
+	message Observation {
+		string type = 1;	//o tipo pode ser person ou car, fica bem assim?
+		string id = 2;
+		google.protobuf.Timestamp time = 3;
+	}
+	repeated Observation observation = 2;
+}
+
+message ReportResponse {
+}
+
+//track - recebe o tipo e o id do objeto procurado, devolve a observação mais recente do objeto;	
+
+message TrackRequest {
+	string type = 1;
+	string id = 2;
+}
+
+message TrackResponse {
+	message Observation {
+		string type = 1;
+		string id = 2;
+		google.protobuf.Timestamp time = 3;
+	}
+	Observation observation = 1;
+}
+
+//trackMatch - same as "track" mas apenas parte do seu id (devolve mais do que um objeto)
+
+message TrackMatchRequest {
+	string type = 1;
+	string id = 2;
+}
+
+message TrackMatchResponse {
+	message Observation {
+		string type = 1;
+		string id = 2;
+		google.protobuf.Timestamp time = 3;
+	}
+	repeated Observation observation = 1;
+}
+
+//trace - recebe o tipo e o id do objeto, devolve uma lista ordenada de observações do objeto
+
+message TraceRequest {
+	string type = 1;
+	string id = 2;
+}
+
+message TraceResponse {
+	message Observation {
+		string type = 1;
+		string id = 2;
+		google.protobuf.Timestamp time = 3;
+	}
+	repeated Observation observation = 1;
+}
+
+// service
+
+service SiloService {
+  rpc cam_join(CamJoinRequest) returns (CamJoinResponse);
+  rpc cam_info(CamInfoRequest) returns (CamInfoResponse);
+  rpc report(ReportRequest) returns (ReportResponse);
+  rpc track(TrackRequest) returns (TrackResponse);
+  rpc track_match(TrackMatchRequest) returns (TrackMatchResponse);
+  rpc trace(TraceRequest) returns (TraceResponse);
+}
+
