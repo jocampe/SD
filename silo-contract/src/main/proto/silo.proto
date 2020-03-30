@@ -93,6 +93,16 @@ message TraceResponse {
 	repeated Observation observation = 1;
 }
 
+
+message PingRequest {
+	string text = 1;
+}
+
+message PingResponse {
+	string text = 1;
+}
+
+
 // service
 
 service SiloService {
@@ -102,5 +112,7 @@ service SiloService {
   rpc track(TrackRequest) returns (TrackResponse);
   rpc track_match(TrackMatchRequest) returns (TrackMatchResponse);
   rpc trace(TraceRequest) returns (TraceResponse);
+  
+  rpc ping(PingRequest) returns (PingResponse);
 }
 
