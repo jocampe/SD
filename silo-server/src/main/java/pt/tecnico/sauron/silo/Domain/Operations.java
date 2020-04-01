@@ -1,13 +1,15 @@
 package pt.tecnico.sauron.silo.Domain;
 
 import com.google.protobuf.Timestamp;
+
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 import pt.tecnico.sauron.silo.Domain.*;
-import pt.tecnico.sauron.silo.grpc.Silo.*;
+//import pt.tecnico.sauron.silo.grpc.Silo.*;
 
 public class Operations {
 	
@@ -40,5 +42,5 @@ public class Operations {
 	public Iterable<?extends Observation> trace(String type, String id) {
 		return object.get(id).getObservationList();
 		
-	}
+	}	
 }

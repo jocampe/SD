@@ -2,7 +2,7 @@ package pt.tecnico.sauron.silo.Domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import pt.tecnico.sauron.silo.grpc.Silo.Observation;
+import pt.tecnico.sauron.silo.Domain.*;
 
 public class Object {
 	
