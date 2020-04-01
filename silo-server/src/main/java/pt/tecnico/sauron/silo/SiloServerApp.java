@@ -4,6 +4,7 @@ import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import java.io.IOException;
+import java.util.Scanner;
 
 
 public class SiloServerApp {
@@ -29,6 +30,13 @@ public class SiloServerApp {
 
 		// Server threads are running in the background.
 		System.out.println("Server started");
+		
+		new Thread(() -> {
+			System.out.println("<Press enter to shutdown>");
+			new Scanner(System.in).nextLine();
+
+			server.shutdown();
+		}).start();
 
 		// Do not exit the main thread. Wait until server is terminated.
 		server.awaitTermination();

@@ -8,6 +8,12 @@ import "google/protobuf/timestamp.proto";
 
 //cam_join - regista uma camera, recebe nome e coordenadas
 
+message Observation {
+	string type = 1;
+	string id = 2;
+	google.protobuf.Timestamp time = 3;
+}
+
 message CamJoinRequest {
 	string name = 1;
 	double coordinates = 2;
@@ -34,16 +40,12 @@ message CamInfoResponse {
 
 message ReportRequest {
 	string name = 1;
-	message Observation {
-		string type = 1;	//o tipo pode ser person ou car, fica bem assim?
-		string id = 2;
-		google.protobuf.Timestamp time = 3;
-	}
 	repeated Observation observation = 2;
 }
 
 message ReportResponse {
 }
+
 
 //track - recebe o tipo e o id do objeto procurado, devolve a observação mais recente do objeto;	
 
@@ -53,11 +55,6 @@ message TrackRequest {
 }
 
 message TrackResponse {
-	message Observation {
-		string type = 1;
-		string id = 2;
-		google.protobuf.Timestamp time = 3;
-	}
 	Observation observation = 1;
 }
 
@@ -69,11 +66,6 @@ message TrackMatchRequest {
 }
 
 message TrackMatchResponse {
-	message Observation {
-		string type = 1;
-		string id = 2;
-		google.protobuf.Timestamp time = 3;
-	}
 	repeated Observation observation = 1;
 }
 
@@ -85,11 +77,6 @@ message TraceRequest {
 }
 
 message TraceResponse {
-	message Observation {
-		string type = 1;
-		string id = 2;
-		google.protobuf.Timestamp time = 3;
-	}
 	repeated Observation observation = 1;
 }
 
@@ -106,11 +93,11 @@ message PingResponse {
 // service
 
 service SiloService {
-  rpc cam_join(CamJoinRequest) returns (CamJoinResponse);
-  rpc cam_info(CamInfoRequest) returns (CamInfoResponse);
+  rpc camJoin(CamJoinRequest) returns (CamJoinResponse);
+  rpc camInfo(CamInfoRequest) returns (CamInfoResponse);
   rpc report(ReportRequest) returns (ReportResponse);
   rpc track(TrackRequest) returns (TrackResponse);
-  rpc track_match(TrackMatchRequest) returns (TrackMatchResponse);
+  rpc trackMatch(TrackMatchRequest) returns (TrackMatchResponse);
   rpc trace(TraceRequest) returns (TraceResponse);
   
   rpc ping(PingRequest) returns (PingResponse);
