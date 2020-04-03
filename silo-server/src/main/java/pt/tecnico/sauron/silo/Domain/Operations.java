@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
-import pt.tecnico.sauron.silo.Domain.*;
 
 
 
@@ -48,19 +47,30 @@ public class Operations {
 	}
 	
 
-	public void report (String name, Iterable<?extends Observation>observation, List<String>id, List<String>type){
-		//do verification with cam_info
-			Instant time = Instant.now();
-			Timestamp timestamp = Timestamp.newBuilder().setSeconds(time.getEpochSecond()).setNanos(time.getNano()).build();
-			int count = 0;
-			for(Observation element : observation ) {
-				Object object2 = new Object(id.get(count), type.get(count));
-				element.setTime(timestamp);
-				object2.addObservation(element);
-				object.put(id.get(count), object2);
-				count++;
+	public void report (String name, Iterable<?extends Observation>observation){
+			Camera cam = _cameras.get(name);
+			if(cam != null) {
+				Instant time = Instant.now();
+				Timestamp timestamp = Timestamp.newBuilder().setSeconds(time.getEpochSecond()).setNanos(time.getNano()).build();
+				for(Observation element : observation ) {
+					if (object.get(element.getId()) == null) {
+					Object object2 = new Object(element.getId(), element.getType());
+					element.setCam(name);
+					element.setLat(cam.getLatitude());
+					element.setLon(cam.getLongitude());
+					element.setTime(timestamp);
+					object2.addObservation(element);
+					object.put(element.getId(), object2);
+					}
+					else {
+						element.setCam(name);
+						element.setLat(cam.getLatitude());
+						element.setLon(cam.getLongitude());
+						element.setTime(timestamp);
+						object.get(element.getId()).addObservation(element);
+					}
+				}
 			}
-			
 			
 	}
 

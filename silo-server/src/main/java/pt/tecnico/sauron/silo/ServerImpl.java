@@ -106,7 +106,7 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 	@Override
 	public void report(ReportRequest request, StreamObserver<ReportResponse> responseObserver) {
 		ReportResponse response = ReportResponse.getDefaultInstance();
-		op.report(request.getName(), this.transformList2(request.getObservationList()), request.getIdList(), request.getTypeList());
+		op.report(request.getName(), this.transformList2(request.getObservationList()));
 		responseObserver.onNext(response);
 	    responseObserver.onCompleted();					
 		}
