@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import com.google.protobuf.Timestamp;
+
 import io.grpc.StatusRuntimeException;
 import pt.tecnico.sauron.silo.client.SiloFrontend;
 
@@ -40,12 +42,23 @@ public class EyeApp {
 		final double latitude = Double.parseDouble(args[3]);
 		final double longitude = Double.parseDouble(args[4]);
 		
-		/*try(SiloFrontend frontend = new SiloFrontend(host, port); Scanner scanner = new Scanner(System.in)) {
+		SiloFrontend frontend = new SiloFrontend(host, port);
+		
+		//cam_join -> login da camera
+		CamJoinRequest request = CamJoinRequest.newBuilder()
+				.setName(name)
+				.setCoordinates(CoordinatesGrpc.newBuilder()
+						.setLat(latitude)
+						.setLon(longitude).build()).build();
+		frontend.camJoin(request);
+		
+		try(Scanner scanner = new Scanner(System.in)) {
 			  // Check if camera doesn't exist frontend.getCamera(name);
 			  while(true) {
 			    try {
 			      String line = scanner.nextLine();
 			      String[] array = line.split(",", 2);
+			      System.out.println(array[0]);
 			      //Comment
 			      if(CMT_CMD.equals(array[0]))
 			        continue;
@@ -57,29 +70,38 @@ public class EyeApp {
 			        continue;
 			      }
 			      
-			      //add Obs to 
+			      //report -> envia observacoes para o servidor
 			      else if (FLUSH_CMD.equals(array[0])) {
-			          CamInfoResponse ciResponse = frontend.camInfo(CamInfoRequest.getDefaultInstance());
+			    	  ReportRequest rRequest = ReportRequest.newBuilder()
+			    			  .setName(name)
+			    			  .addAllObservation(_obsList).build();
+			    	//Bug estranho aqui. nao reconhece o report no silofrontend
+			    	//  frontend.report(rRequest);
 			          continue;
 			      }
+			      
+			      //guarda a observacao sem timestamp (e calculado apenas no server)
 			      else {
-			        ObservationGrpc obs = ObservationGrpc.newBuilder(array[0]);
-			        obsList.add(obs);
+			        ObservationGrpc obs = ObservationGrpc.newBuilder()
+			        		.setType(array[0])
+			        		.setId(array[1])
+			        		.build();
+			        _obsList.add(obs);
 			        continue;
 			      }
 			        
-			      }
+			    }
 			    catch (StatusRuntimeException e) {
 					System.out.println(e.getStatus().getDescription());
 			    	}	
-			      finally {
+			    finally {
 			        System.out.println("Connection Closed");
 			        //Remove Camera from server list
-			      }
 			    }
-			  }*/
-		
+			  }
 		}
+		
 	}
+}
 	
 

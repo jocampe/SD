@@ -16,7 +16,7 @@ import pt.tecnico.sauron.silo.Domain.Exception.*;
 public class Operations {
 	
 	private Map<String,Object> object = new TreeMap<>();
-	private Map<String, Camera> _cameras = new TreeMap<>();
+	private Map<String,Camera> _cameras = new TreeMap<>();
 	
 	public Operations() {}
 		
@@ -76,13 +76,15 @@ public class Operations {
 	}
 
 	public synchronized void cam_join(String name, double latitude, double longitude){
-		   	Camera eye = new Camera(name, latitude, longitude);
 		   	if(name.length()<3 || name.length()>15) { //FIXME alphanumeric
 		   		//throw new InvalidCameraNameException();
+		   		return;
 		   	}
-		   	if(_cameras.get(name).equals(eye)) {
+		   	if(_cameras.containsKey(name)) {
 		   		//throw new DuplicateCameraException();
+		   		return;
 		   	}
+		   	Camera eye = new Camera(name, latitude, longitude);
 		   	_cameras.put(name, eye);
 		}
 
@@ -99,6 +101,10 @@ public class Operations {
 			_cameras.remove(name);
 		} 
 		*/
+		public void clear() {
+			_cameras.clear();
+			object.clear();
+		}
 		
 	
 

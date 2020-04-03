@@ -63,7 +63,7 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 	
 	@Override
 	public void clear(ClearRequest request, StreamObserver<ClearResponse> responseObserver) {
-		//TO_DO
+		op.clear();
 		ClearResponse response = ClearResponse.getDefaultInstance();
 		responseObserver.onNext(response);
 		responseObserver.onCompleted();
@@ -112,6 +112,7 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 		}
 	
 
+	@Override
 	public void camJoin(CamJoinRequest request, StreamObserver<CamJoinResponse> responseObserver) {
 	  CamJoinResponse response = CamJoinResponse.getDefaultInstance();
 	  op.cam_join(request.getName(), request.getCoordinates().getLat(), request.getCoordinates().getLon());

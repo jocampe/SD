@@ -24,11 +24,13 @@ public class SiloFrontend implements AutoCloseable {
 	public PingResponse setPing(PingRequest request) {
 		return stub.ping(request);
 	}
+	public ClearResponse setClear(ClearRequest request) {
+		return stub.clear(request);
+	}
 	
 	public TrackResponse getTrack(TrackRequest request) {
 		return stub.track(request);
 	}
-	
 	
 	public CamJoinResponse camJoin(CamJoinRequest request) {
 		return stub.camJoin(request);
@@ -37,8 +39,12 @@ public class SiloFrontend implements AutoCloseable {
 	public CamInfoResponse camInfo(CamInfoRequest request) {
 		return stub.camInfo(request);
 	}
-
 	
+	public ReportResponse report(ReportRequest request) {
+		return stub.report(request);
+	}
+
+
 	@Override
 	public final void close() {
 		channel.shutdown();

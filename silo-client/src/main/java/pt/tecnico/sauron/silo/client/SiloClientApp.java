@@ -3,6 +3,7 @@ package pt.tecnico.sauron.silo.client;
 import java.util.Scanner;
 
 import pt.tecnico.sauron.silo.client.SiloFrontend;
+import pt.tecnico.sauron.silo.grpc.Silo.ClearRequest;
 import pt.tecnico.sauron.silo.grpc.Silo.PingRequest;
 import pt.tecnico.sauron.silo.grpc.Silo.PingResponse;
 
@@ -35,7 +36,7 @@ public class SiloClientApp {
 		                break; 
 		                
 		            case "ctrl_clear": 
-		                //TO_DO
+		                frontend.setClear(ClearRequest.getDefaultInstance());
 		                break; 
 		                
 		            case "ctrl_init": 
