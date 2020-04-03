@@ -9,11 +9,12 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 import pt.tecnico.sauron.silo.Domain.*;
-//import pt.tecnico.sauron.silo.grpc.Silo.*;
+
 
 public class Operations {
 	
 	private Map<String,Object> object = new TreeMap<>();
+	private Map<String, Camera> _cameras = new TreeMap<>();
 	
 	public Operations() {}
 		
@@ -42,5 +43,40 @@ public class Operations {
 	public Iterable<?extends Observation> trace(String type, String id) {
 		return object.get(id).getObservationList();
 		
-	}	
+	}
+	
+	public synchronized void cam_join(String name, double latitude, double longitude) {
+		  /*
+		   * try{
+		   * 	Camera eye = new Camera(name, latitude, longitude);
+		   * 	_cameras.put(name, camera);
+		   * }
+		   * catch (InvalidCameraNameException icne) {System.out.println("Invalid Camera name.\n");}
+		   * catch (DuplicateCameraException dce) {System.out.println("Duplicate Camera Name");}
+		   * 
+		   */
+		   	Camera eye = new Camera(name, latitude, longitude);
+		   	_cameras.put(name, eye);
+		}
+
+		public Coordinates cam_info(String name) { 
+		  /*
+		  try {
+		    Camera camera = _cameras.get(name);
+		    String camInfo = "Latitude: " + camera.getLatitude() + "Longitude: " + camera.getLongitude();
+		    return camInfo;
+		  }
+		  catch(NoSuchCameraException nsce) {System.out.println("Camera doesn't exist");}
+		  */
+			Camera eye = _cameras.get(name);
+			Coordinates coordinates = new Coordinates(eye.getLatitude(), eye.getLongitude());
+			return coordinates;
+		}
+		/*
+		public void removeCamera(String name) {
+			_cameras.remove(name);
+		} 
+		*/
+		
+	
 }
