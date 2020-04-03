@@ -5,6 +5,7 @@ import java.util.List;
 
 import io.grpc.stub.StreamObserver;
 import pt.tecnico.sauron.silo.Domain.Operations;
+import pt.tecnico.sauron.silo.Domain.Coordinates;
 import pt.tecnico.sauron.silo.Domain.Observation;
 import pt.tecnico.sauron.silo.grpc.Silo.*;
 import pt.tecnico.sauron.silo.grpc.SiloServiceGrpc;
@@ -28,6 +29,13 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 			obsLst.add(obs);
 		}
 		return obsLst;
+	}
+	
+	public CoordinatesGrpc transformCoord(Coordinates coordinates) {
+		return CoordinatesGrpc.newBuilder()
+				.setLat(coordinates.getLat())
+				.setLon(coordinates.getLon())
+				.build();
 	}
 	
 	public Iterable<?extends ObservationGrpc> transformList(Iterable<?extends Observation> lst) {
@@ -101,7 +109,26 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 		op.report(request.getName(), this.transformList2(request.getObservationList()), request.getIdList(), request.getTypeList());
 		responseObserver.onNext(response);
 	    responseObserver.onCompleted();					
-	}
+		}
 	
+
+	public void camJoin(CamJoinRequest request, StreamObserver<CamJoinResponse> responseObserver) {
+	  CamJoinResponse response = CamJoinResponse.getDefaultInstance();
+	  op.cam_join(request.getName(), request.getCoordinates().getLat(), request.getCoordinates().getLon());
+	  responseObserver.onNext(response);
+	  responseObserver.onCompleted();
+	}
+
+	
+	@Override
+	public void camInfo(CamInfoRequest request, StreamObserver<CamInfoResponse> responseObserver) {
+	  CamInfoResponse response = CamInfoResponse.newBuilder().setCoordinates(this.transformCoord((op.cam_info(request.getName())))).build();
+	  responseObserver.onNext(response);
+	  responseObserver.onCompleted();
+	  	}
+	 
 }
+
+
+
 

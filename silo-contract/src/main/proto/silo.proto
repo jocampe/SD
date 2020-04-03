@@ -14,14 +14,14 @@ message ObservationGrpc {
 	google.protobuf.Timestamp time = 3;
 }
 
-message Coordinates {
+message CoordinatesGrpc {
     double lat = 1;
     double lon = 2;
 }
 
 message CamJoinRequest {
 	string name = 1;
-	Coordinates coordinates = 2;
+	CoordinatesGrpc coordinates = 2;
 }
 
 message CamJoinResponse {
@@ -34,7 +34,7 @@ message CamInfoRequest {
 }
 
 message CamInfoResponse {
-	Coordinates coordinates = 1;
+	CoordinatesGrpc coordinates = 1;
 }
 
 //report - recebe o nome da camera, um conjunto de observacoes, e os dados correspondentes

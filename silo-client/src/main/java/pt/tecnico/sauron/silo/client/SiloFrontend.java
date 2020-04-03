@@ -30,12 +30,18 @@ public class SiloFrontend implements AutoCloseable {
 	}
 	
 	
+	public CamJoinResponse camJoin(CamJoinRequest request) {
+		return stub.camJoin(request);
+	}
 	
-	
-	
+	public CamInfoResponse camInfo(CamInfoRequest request) {
+		return stub.camInfo(request);
+	}
+
 	
 	@Override
 	public final void close() {
 		channel.shutdown();
 	}
+
 }
