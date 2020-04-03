@@ -75,20 +75,20 @@ public class Operations {
 			
 	}
 
-	public synchronized void cam_join(String name, double latitude, double longitude) throws InvalidCameraNameException, DuplicateCameraException{
+	public synchronized void cam_join(String name, double latitude, double longitude){
 		   	Camera eye = new Camera(name, latitude, longitude);
 		   	if(name.length()<3 || name.length()>15) { //FIXME alphanumeric
-		   		throw new InvalidCameraNameException();
+		   		//throw new InvalidCameraNameException();
 		   	}
 		   	if(_cameras.get(name).equals(eye)) {
-		   		throw new DuplicateCameraException();
+		   		//throw new DuplicateCameraException();
 		   	}
 		   	_cameras.put(name, eye);
 		}
 
-		public synchronized Coordinates cam_info(String name) throws NoSuchCameraException{
+		public synchronized Coordinates cam_info(String name){
 			if(_cameras.get(name).equals(null)) {
-				throw new NoSuchCameraException();
+				//throw new NoSuchCameraException();
 			}
 			Camera eye = _cameras.get(name);
 			Coordinates coordinates = new Coordinates(eye.getLatitude(), eye.getLongitude());
