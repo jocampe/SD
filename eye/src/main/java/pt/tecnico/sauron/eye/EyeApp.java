@@ -75,8 +75,7 @@ public class EyeApp {
 			    	  ReportRequest rRequest = ReportRequest.newBuilder()
 			    			  .setName(name)
 			    			  .addAllObservation(_obsList).build();
-			    	//Bug estranho aqui. nao reconhece o report no silofrontend
-			    	//  frontend.report(rRequest);
+			    	  frontend.report(rRequest);
 			          continue;
 			      }
 			      

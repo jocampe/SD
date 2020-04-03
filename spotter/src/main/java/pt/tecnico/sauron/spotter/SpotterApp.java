@@ -10,8 +10,6 @@ import pt.tecnico.sauron.silo.grpc.Silo.*;
 import com.google.protobuf.Timestamp;
 
 
-
-
 public class SpotterApp {
 	private static final String SPOT_CMD = "spot";
 	private static final String TRAIL_CMD = "trail";
@@ -41,22 +39,62 @@ public class SpotterApp {
 			while (true) {
 				try {
 					String line = scanner.nextLine();
-					String[] arrOfStr = line.split(" ", 2); 
+					String[] arrOfStr = line.split(" "); 
 					
 					if (HELP_CMD.equals(arrOfStr[0])) {System.out.println("Available commands: spot, trail;");}
 					
-					if (SPOT_CMD.equals(arrOfStr[0])) {System.out.println("hey, u got spotted");}
+					else if (SPOT_CMD.equals(arrOfStr[0])) {
+						//verificar se tem *
+						if(arrOfStr[2].indexOf("*") != -1) {
+							TrackMatchRequest tmRequest = TrackMatchRequest.newBuilder()
+									.setType(arrOfStr[1])
+									.setId(arrOfStr[2])
+									.build();
+							TrackMatchResponse response = frontend.trackMatch(tmRequest);
+							int size = response.getObservationCount();
+							for(int i=0; i<size; i++) {
+								System.out.println(
+										arrOfStr[1] + "," + 
+										response.getObservation(i).getId() + "," + 
+										response.getObservation(i).getTime() + "," 
+										/*E PRECISO A CAMERA AQUI*/
+/*ou se acrescenta cam no proto e usa se o cam_info para ir sacar coord, ou outra coisa qq*/);
+							}
+						}
+						else {
+							TrackRequest tRequest = TrackRequest.newBuilder()
+									.setType(arrOfStr[1])
+									.setId(arrOfStr[2])
+									.build();
+							TrackResponse response = frontend.track(tRequest);
+							System.out.println(
+									arrOfStr[1] + "," + 
+									response.getObservation().getId() + "," + 
+									response.getObservation().getTime() + "," 
+									/*a mesma coisa para este*/);
+						}
+					}
 					
 					if (TRAIL_CMD.equals(arrOfStr[0])) {
-						String input[] = arrOfStr[1].split(" ");
-						TrackResponse getResponse = frontend.getTrack(TrackRequest.newBuilder().setType(input[1]).setId(input[0]).build());
+						TraceResponse response = frontend.trace(TraceRequest.newBuilder().setType(arrOfStr[1]).setId(arrOfStr[2]).build());
+						
+						int size = response.getObservationCount();
+						for(int i=0; i<size; i++) {
+							System.out.println(
+									arrOfStr[1] + "," + 
+									response.getObservation(i).getId() + "," + 
+									response.getObservation(i).getTime() + "," 
+									/*E PRECISO A CAMERA AQUI*/
+/*ou se acrescenta cam no proto e usa se o cam_info para ir sacar coord, ou outra coisa qq*/);
+						}
+						/*
 						String id = getResponse.getObservation().getId();
 						Timestamp timestamp = getResponse.getObservation().getTime();
 						long data = timestamp.getSeconds();
 						SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 						Date date = new Date(data);
 						System.out.println(formatter.format(date));
-					
+					  */
 					}
 					
 				 }catch (StatusRuntimeException e) {System.out.println(e.getStatus().getDescription());}

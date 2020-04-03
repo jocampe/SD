@@ -28,8 +28,12 @@ public class SiloFrontend implements AutoCloseable {
 		return stub.clear(request);
 	}
 	
-	public TrackResponse getTrack(TrackRequest request) {
+	public TrackResponse track(TrackRequest request) {
 		return stub.track(request);
+	}
+	
+	public TraceResponse trace(TraceRequest request) {
+		return stub.trace(request);
 	}
 	
 	public CamJoinResponse camJoin(CamJoinRequest request) {
@@ -42,6 +46,10 @@ public class SiloFrontend implements AutoCloseable {
 	
 	public ReportResponse report(ReportRequest request) {
 		return stub.report(request);
+	}
+	
+	public TrackMatchResponse trackMatch(TrackMatchRequest request) {
+		return stub.trackMatch(request);
 	}
 
 

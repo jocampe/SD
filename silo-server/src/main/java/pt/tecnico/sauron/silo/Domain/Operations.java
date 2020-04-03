@@ -17,6 +17,7 @@ public class Operations {
 	
 	private Map<String,Object> object = new TreeMap<>();
 	private Map<String,Camera> _cameras = new TreeMap<>();
+	private Map<String,Observation> _obs = new TreeMap<>(); //camera e a obs associada
 	
 	public Operations() {}
 		
@@ -62,6 +63,7 @@ public class Operations {
 					element.setTime(timestamp);
 					object2.addObservation(element);
 					object.put(element.getId(), object2);
+					_obs.put(name,element);
 					}
 					else {
 						element.setCam(name);
