@@ -9,7 +9,6 @@ import pt.tecnico.sauron.silo.grpc.Silo.*;
 //import pt.tecnico.sauron.silo.grpc.Silo.G
 import com.google.protobuf.Timestamp;
 
-
 public class SpotterApp {
 	private static final String SPOT_CMD = "spot";
 	private static final String TRAIL_CMD = "trail";
@@ -71,14 +70,15 @@ public class SpotterApp {
 									.setId(arrOfStr[2])
 									.build();
 							TrackResponse response = frontend.track(tRequest);
-							CamInfoResponse camInfoResponse;
-							camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation().getCamera()).build());
+							/*CamInfoResponse camInfoResponse;
+							camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation().getCamera()).build());*/
 							System.out.println(
 									arrOfStr[1] + "," + 
 									response.getObservation().getId() + "," + 
-									response.getObservation().getTime() + "," +
-									camInfoResponse.getCoordinates().getLat() + "," + 
-									camInfoResponse.getCoordinates().getLon());
+									response.getObservation().getTime());
+									// + "," +
+									//camInfoResponse.getCoordinates().getLat() + "," + 
+									//camInfoResponse.getCoordinates().getLon());
 						}
 					}
 					

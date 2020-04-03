@@ -21,6 +21,9 @@ public class Object {
 	public String getType() {
 		return this.type;
 	}
+	public List<Observation> getObsList(){
+		return this.obsList;
+	}
 	
 	
 	public void addObservation(Observation observation){

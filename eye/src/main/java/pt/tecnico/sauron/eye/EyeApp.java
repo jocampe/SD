@@ -79,6 +79,7 @@ public class EyeApp {
 			    			  .setName(name)
 			    			  .addAllObservation(_obsList).build();
 			    	  frontend.report(rRequest);
+			    	  System.out.println("bom dia");
 			    	  _obsList.clear();
 			          continue;
 			      }
@@ -88,6 +89,7 @@ public class EyeApp {
 			        ObservationGrpc obs = ObservationGrpc.newBuilder()
 			        		.setType(array[0])
 			        		.setId(array[1])
+			        		.setCamera(name)
 			        		.build();
 			        _obsList.add(obs);
 			        continue;
@@ -98,7 +100,7 @@ public class EyeApp {
 					System.out.println(e.getStatus().getDescription());
 			    	}	
 			    finally {
-			        System.out.println("Connection Closed");
+			        
 			        //Remove Camera from server list
 			    }
 			  }

@@ -22,6 +22,7 @@ public class Operations {
 		
 	
 	public Observation track(String type, String id) {
+		System.out.println("AQUI :" + object.get(id).getObsList().size());
 		return object.get(id).getLastObservation();
 	}
 	
@@ -49,12 +50,14 @@ public class Operations {
 	
 
 	public void report (String name, Iterable<?extends Observation>observation){
+		
 			Camera cam = _cameras.get(name);
 			if(cam != null) {
 				Instant time = Instant.now();
 				Timestamp timestamp = Timestamp.newBuilder().setSeconds(time.getEpochSecond()).setNanos(time.getNano()).build();
 				for(Observation element : observation ) {
 					if (object.get(element.getId()) == null) {
+					//System.out.println("Received :" + element.getCam() + element.getId()+ cam.getLatitude()+ element.getType());
 					Object object2 = new Object(element.getId(), element.getType());
 					element.setCam(name);
 					element.setLat(cam.getLatitude());
@@ -64,6 +67,7 @@ public class Operations {
 					object.put(element.getId(), object2);
 					}
 					else {
+						System.out.println("morning");
 						element.setCam(name);
 						element.setLat(cam.getLatitude());
 						element.setLon(cam.getLongitude());

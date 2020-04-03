@@ -14,7 +14,8 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 	
 	private Operations op = new Operations();
 
-	public ObservationGrpc transform(Observation observation) {  
+	public ObservationGrpc transform(Observation observation) { 
+		System.out.println("AQUI2 :");
 		return ObservationGrpc.newBuilder()
 				.setType(observation.getType()) 
 				.setId(observation.getId())
@@ -81,8 +82,7 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 	@Override
 	public void track(TrackRequest request, StreamObserver<TrackResponse> responseObserver) {
 		TrackResponse response = 
-				TrackResponse.newBuilder()
-					.setObservation(this.transform(op.track(request.getType(), request.getId()))).build();
+				TrackResponse.newBuilder().setObservation(transform(this.op.track(request.getType(), request.getId()))).build();
 		responseObserver.onNext(response);
 	    responseObserver.onCompleted();					
 	}
