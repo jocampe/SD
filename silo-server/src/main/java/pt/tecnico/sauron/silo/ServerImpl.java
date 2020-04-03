@@ -20,6 +20,15 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 				.setTime(observation.getTime())
 				.build();
 	}
+	public Iterable<?extends Observation> transformList2(Iterable<?extends ObservationGrpc> lst) {
+		List<Observation> obsLst = new ArrayList<>();
+		for(ObservationGrpc element : lst)
+		{
+			Observation obs = new Observation(element.getId(), element.getType(), element.getTime());
+			obsLst.add(obs);
+		}
+		return obsLst;
+	}
 	
 	public Iterable<?extends ObservationGrpc> transformList(Iterable<?extends Observation> lst) {
 		List<ObservationGrpc> grpcLst = new ArrayList<>();
@@ -85,5 +94,14 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 		responseObserver.onNext(response);
 	    responseObserver.onCompleted();
 	}
+	
+	@Override
+	public void report(ReportRequest request, StreamObserver<ReportResponse> responseObserver) {
+		ReportResponse response = ReportResponse.getDefaultInstance();
+		op.report(request.getName(), this.transformList2(request.getObservationList()), request.getIdList(), request.getTypeList());
+		responseObserver.onNext(response);
+	    responseObserver.onCompleted();					
+	}
+	
 }
 

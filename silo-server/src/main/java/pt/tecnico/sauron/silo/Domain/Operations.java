@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
-import pt.tecnico.sauron.silo.Domain.*;
-//import pt.tecnico.sauron.silo.grpc.Silo.*;
 
 public class Operations {
 	
@@ -42,5 +40,21 @@ public class Operations {
 	public Iterable<?extends Observation> trace(String type, String id) {
 		return object.get(id).getObservationList();
 		
-	}	
+	}
+	
+	public void report (String name, Iterable<?extends Observation>observation, List<String>id, List<String>type){
+		//do verification with cam_info
+			Instant time = Instant.now();
+			Timestamp timestamp = Timestamp.newBuilder().setSeconds(time.getEpochSecond()).setNanos(time.getNano()).build();
+			int count = 0;
+			for(Observation element : observation ) {
+				Object object2 = new Object(id.get(count), type.get(count));
+				element.setTime(timestamp);
+				object2.addObservation(element);
+				object.put(id.get(count), object2);
+				count++;
+			}
+			
+			
+	}
 }

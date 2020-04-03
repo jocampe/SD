@@ -6,7 +6,7 @@ public class Observation {
 	
 	private String id;
 	private String type;
-	private Timestamp timestamp; 
+	public Timestamp timestamp; 
 
 	
 	public Observation (String _id, String _type, Timestamp _timestamp) {

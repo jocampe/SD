@@ -42,6 +42,8 @@ message CamInfoResponse {
 message ReportRequest {
 	string name = 1;
 	repeated ObservationGrpc observation = 2;
+	repeated string id = 3;
+	repeated string type = 4;
 }
 
 message ReportResponse {

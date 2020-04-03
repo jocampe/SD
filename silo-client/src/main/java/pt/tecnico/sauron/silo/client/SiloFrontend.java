@@ -5,6 +5,7 @@ import io.grpc.ManagedChannelBuilder;
 import pt.tecnico.sauron.silo.grpc.Silo.*;
 import pt.tecnico.sauron.silo.grpc.SiloServiceGrpc;
 
+
 public class SiloFrontend implements AutoCloseable {
 	
 	private final ManagedChannel channel;
@@ -23,6 +24,15 @@ public class SiloFrontend implements AutoCloseable {
 	public PingResponse setPing(PingRequest request) {
 		return stub.ping(request);
 	}
+	
+	public TrackResponse getTrack(TrackRequest request) {
+		return stub.track(request);
+	}
+	
+	
+	
+	
+	
 	
 	@Override
 	public final void close() {
