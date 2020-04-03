@@ -58,16 +58,19 @@ public class EyeApp {
 			    try {
 			      String line = scanner.nextLine();
 			      String[] array = line.split(",", 2);
-			      System.out.println(array[0]);
 			      //Comment
-			      if(CMT_CMD.equals(array[0]))
+			      if(array[0].indexOf("#") != -1) 
 			        continue;
 			      //Make camera sleep for time milliseconds
 			      else if(SLEEP_CMD.equals(array[0])) {
 			        
 			        int time = Integer.parseInt(array[1]);
-			        //Thread.sleep(time);
-			        continue;
+			        try {
+			            Thread.sleep(time);
+			        } catch(InterruptedException e) {
+			            System.out.println("got interrupted for " + (float)time/1000 + "seconds");
+			        }
+			        continue;	
 			      }
 			      
 			      //report -> envia observacoes para o servidor
@@ -76,6 +79,7 @@ public class EyeApp {
 			    			  .setName(name)
 			    			  .addAllObservation(_obsList).build();
 			    	  frontend.report(rRequest);
+			    	  _obsList.clear();
 			          continue;
 			      }
 			      

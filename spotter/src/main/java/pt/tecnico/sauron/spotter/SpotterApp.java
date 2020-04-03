@@ -51,10 +51,11 @@ public class SpotterApp {
 									.setId(arrOfStr[2])
 									.build();
 							TrackMatchResponse response = frontend.trackMatch(tmRequest);
+							CamInfoResponse camInfoResponse;
 							int size = response.getObservationCount();
 							for(int i=0; i<size; i++) {
 								//cam_info para ir buscar as coordenadas
-								CamInfoResponse camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation(i).getCamera()).build());
+								camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation(i).getCamera()).build());
 								System.out.println(
 						/*type*/		arrOfStr[1] + "," + 
 						/*Id*/			response.getObservation(i).getId() + "," + 
@@ -70,7 +71,8 @@ public class SpotterApp {
 									.setId(arrOfStr[2])
 									.build();
 							TrackResponse response = frontend.track(tRequest);
-							CamInfoResponse camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation().getCamera()).build());
+							CamInfoResponse camInfoResponse;
+							camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation().getCamera()).build());
 							System.out.println(
 									arrOfStr[1] + "," + 
 									response.getObservation().getId() + "," + 
@@ -82,9 +84,10 @@ public class SpotterApp {
 					
 					if (TRAIL_CMD.equals(arrOfStr[0])) {
 						TraceResponse response = frontend.trace(TraceRequest.newBuilder().setType(arrOfStr[1]).setId(arrOfStr[2]).build());
-						CamInfoResponse camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation().getCamera()).build());
+						CamInfoResponse camInfoResponse;
 						int size = response.getObservationCount();
 						for(int i=0; i<size; i++) {
+							camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation(i).getCamera()).build());
 							System.out.println(
 									arrOfStr[1] + "," + 
 									response.getObservation(i).getId() + "," + 
