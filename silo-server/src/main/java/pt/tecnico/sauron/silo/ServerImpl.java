@@ -19,13 +19,14 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 				.setType(observation.getType()) 
 				.setId(observation.getId())
 				.setTime(observation.getTime())
+				.setCamera(observation.getCam())
 				.build();
 	}
 	public Iterable<?extends Observation> transformList2(Iterable<?extends ObservationGrpc> lst) {
 		List<Observation> obsLst = new ArrayList<>();
 		for(ObservationGrpc element : lst)
 		{
-			Observation obs = new Observation(element.getId(), element.getType(), element.getTime());
+			Observation obs = new Observation(element.getId(), element.getType(), element.getTime(), element.getCamera());
 			obsLst.add(obs);
 		}
 		return obsLst;
@@ -46,6 +47,7 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 					.setType(element.getType()) 
 					.setId(element.getId())
 					.setTime(element.getTime())
+					.setCamera(element.getCam())
 					.build());
 		}
 		return grpcLst;

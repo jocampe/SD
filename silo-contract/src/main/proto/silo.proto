@@ -12,6 +12,7 @@ message ObservationGrpc {
 	string type = 1;
 	string id = 2;
 	google.protobuf.Timestamp time = 3;
+	string camera = 4;
 }
 
 message CoordinatesGrpc {

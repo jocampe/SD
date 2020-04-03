@@ -20,10 +20,11 @@ public class Observation {
 		this.latitude = _latitude;
 		this.longitude = _longitude;
 	}
-	public Observation (String _id, String _type, Timestamp _timestamp) {
+	public Observation (String _id, String _type, Timestamp _timestamp, String _cam) {
 		this.id = _id;
 		this.type = _type;
 		this.timestamp = _timestamp;
+		this.camera = _cam;
 	}
 	
 	

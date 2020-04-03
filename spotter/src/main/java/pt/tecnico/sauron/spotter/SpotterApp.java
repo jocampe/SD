@@ -53,12 +53,15 @@ public class SpotterApp {
 							TrackMatchResponse response = frontend.trackMatch(tmRequest);
 							int size = response.getObservationCount();
 							for(int i=0; i<size; i++) {
+								//cam_info para ir buscar as coordenadas
+								CamInfoResponse camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation(i).getCamera()).build());
 								System.out.println(
-										arrOfStr[1] + "," + 
-										response.getObservation(i).getId() + "," + 
-										response.getObservation(i).getTime() + "," 
-										/*E PRECISO A CAMERA AQUI*/
-/*ou se acrescenta cam no proto e usa se o cam_info para ir sacar coord, ou outra coisa qq*/);
+						/*type*/		arrOfStr[1] + "," + 
+						/*Id*/			response.getObservation(i).getId() + "," + 
+						/*time*/		response.getObservation(i).getTime() + "," +
+						/*cam*/			response.getObservation(i).getCamera() + "," + 
+						/*lat*/			camInfoResponse.getCoordinates().getLat() + "," + 
+						/*lon*/			camInfoResponse.getCoordinates().getLon());
 							}
 						}
 						else {
@@ -67,25 +70,27 @@ public class SpotterApp {
 									.setId(arrOfStr[2])
 									.build();
 							TrackResponse response = frontend.track(tRequest);
+							CamInfoResponse camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation().getCamera()).build());
 							System.out.println(
 									arrOfStr[1] + "," + 
 									response.getObservation().getId() + "," + 
-									response.getObservation().getTime() + "," 
-									/*a mesma coisa para este*/);
+									response.getObservation().getTime() + "," +
+									camInfoResponse.getCoordinates().getLat() + "," + 
+									camInfoResponse.getCoordinates().getLon());
 						}
 					}
 					
 					if (TRAIL_CMD.equals(arrOfStr[0])) {
 						TraceResponse response = frontend.trace(TraceRequest.newBuilder().setType(arrOfStr[1]).setId(arrOfStr[2]).build());
-						
+						CamInfoResponse camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation().getCamera()).build());
 						int size = response.getObservationCount();
 						for(int i=0; i<size; i++) {
 							System.out.println(
 									arrOfStr[1] + "," + 
 									response.getObservation(i).getId() + "," + 
-									response.getObservation(i).getTime() + "," 
-									/*E PRECISO A CAMERA AQUI*/
-/*ou se acrescenta cam no proto e usa se o cam_info para ir sacar coord, ou outra coisa qq*/);
+									response.getObservation(i).getTime() + "," +
+									camInfoResponse.getCoordinates().getLat() + "," + 
+									camInfoResponse.getCoordinates().getLon());
 						}
 						/*
 						String id = getResponse.getObservation().getId();
