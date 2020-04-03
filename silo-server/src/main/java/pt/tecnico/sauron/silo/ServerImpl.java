@@ -15,7 +15,6 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 	private Operations op = new Operations();
 
 	public ObservationGrpc transform(Observation observation) { 
-		System.out.println("AQUI2 :");
 		return ObservationGrpc.newBuilder()
 				.setType(observation.getType()) 
 				.setId(observation.getId())

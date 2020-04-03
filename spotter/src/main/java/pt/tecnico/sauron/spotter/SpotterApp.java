@@ -9,6 +9,13 @@ import pt.tecnico.sauron.silo.grpc.Silo.*;
 //import pt.tecnico.sauron.silo.grpc.Silo.G
 import com.google.protobuf.Timestamp;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+
+
+
 public class SpotterApp {
 	private static final String SPOT_CMD = "spot";
 	private static final String TRAIL_CMD = "trail";
@@ -55,10 +62,11 @@ public class SpotterApp {
 							for(int i=0; i<size; i++) {
 								//cam_info para ir buscar as coordenadas
 								camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation(i).getCamera()).build());
+								LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(response.getObservation(i).getTime().getSeconds()), ZoneId.systemDefault());
 								System.out.println(
 						/*type*/		arrOfStr[1] + "," + 
 						/*Id*/			response.getObservation(i).getId() + "," + 
-						/*time*/		response.getObservation(i).getTime() + "," +
+						/*time*/		localDateTime + "," +
 						/*cam*/			response.getObservation(i).getCamera() + "," + 
 						/*lat*/			camInfoResponse.getCoordinates().getLat() + "," + 
 						/*lon*/			camInfoResponse.getCoordinates().getLon());
@@ -70,15 +78,16 @@ public class SpotterApp {
 									.setId(arrOfStr[2])
 									.build();
 							TrackResponse response = frontend.track(tRequest);
-							/*CamInfoResponse camInfoResponse;
-							camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation().getCamera()).build());*/
+							CamInfoResponse camInfoResponse;
+							camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation().getCamera()).build());
+							LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(response.getObservation().getTime().getSeconds()), ZoneId.systemDefault());
 							System.out.println(
 									arrOfStr[1] + "," + 
 									response.getObservation().getId() + "," + 
-									response.getObservation().getTime());
-									// + "," +
-									//camInfoResponse.getCoordinates().getLat() + "," + 
-									//camInfoResponse.getCoordinates().getLon());
+									localDateTime + "," +
+									response.getObservation().getCamera() + "," +
+									camInfoResponse.getCoordinates().getLat() + "," + 
+									camInfoResponse.getCoordinates().getLon());
 						}
 					}
 					
@@ -88,10 +97,11 @@ public class SpotterApp {
 						int size = response.getObservationCount();
 						for(int i=0; i<size; i++) {
 							camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation(i).getCamera()).build());
+							LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(response.getObservation(i).getTime().getSeconds()), ZoneId.systemDefault());
 							System.out.println(
 									arrOfStr[1] + "," + 
 									response.getObservation(i).getId() + "," + 
-									response.getObservation(i).getTime() + "," +
+									localDateTime + "," +
 									camInfoResponse.getCoordinates().getLat() + "," + 
 									camInfoResponse.getCoordinates().getLon());
 						}

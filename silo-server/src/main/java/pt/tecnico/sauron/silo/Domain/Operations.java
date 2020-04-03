@@ -22,7 +22,6 @@ public class Operations {
 		
 	
 	public Observation track(String type, String id) {
-		System.out.println("AQUI :" + object.get(id).getObsList().size());
 		return object.get(id).getLastObservation();
 	}
 	

@@ -79,7 +79,6 @@ public class EyeApp {
 			    			  .setName(name)
 			    			  .addAllObservation(_obsList).build();
 			    	  frontend.report(rRequest);
-			    	  System.out.println("bom dia");
 			    	  _obsList.clear();
 			          continue;
 			      }
