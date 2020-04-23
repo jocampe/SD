@@ -1,4 +1,4 @@
-package pt.tecnico.sauron.silo.client;
+/*package pt.tecnico.sauron.silo.client;
 
 import pt.tecnico.sauron.silo.grpc.Silo.*;
 import org.junit.jupiter.api.*;
@@ -25,7 +25,7 @@ public class CamIT {
 
     @BeforeEach
     public void setUp() {
-        frontend = new SiloFrontend("localhost", 8080);
+        //frontend = new SiloFrontend("localhost", 8080);
     }
 
     @AfterEach
@@ -45,3 +45,4 @@ public class CamIT {
     }
 
 }
+*/

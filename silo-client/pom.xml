@@ -18,9 +18,15 @@
 	<properties>
 		<!-- see parent POM for more properties -->
 
-		<mainclass>pt.tecnico.sauron.silo.client.SiloClientApp</mainclass>
+		<mainclass>pt.tecnico.sauron.silo.SiloServerApp</mainclass>
+		
+		<zoo.host>localhost</zoo.host>
+		<zoo.port>2181</zoo.port>
+		<!-- instance number -->
+		<instance>1</instance>
 		<server.host>localhost</server.host>
-		<server.port>8080</server.port>
+		<server.port>808${instance}</server.port>
+		<server.path>/grpc/sauron/silo/${instance}</server.path>
 	</properties>
 
 	<dependencies>
@@ -42,6 +48,12 @@
 			<artifactId>junit-jupiter-engine</artifactId>
 			<version>${version.junit}</version>
 			<scope>test</scope>
+		</dependency>
+		<!-- ZK Naming -->
+		<dependency>
+		    <groupId>pt.ulisboa.tecnico.sdis</groupId>
+		    <artifactId>zk-naming</artifactId>
+		    <version>1.0.3</version>
 		</dependency>
 	</dependencies>
 
@@ -100,8 +112,11 @@
 				<configuration>
 					<mainClass>${mainclass}</mainClass>
 					<arguments>
-						<argument>${server.host}</argument>
-						<argument>${server.port}</argument>
+					    <argument>${zoo.host}</argument>
+					    <argument>${zoo.port}</argument>
+					    <argument>${server.host}</argument>
+					    <argument>${server.port}</argument>
+					    <argument>${server.path}</argument>
 					</arguments>
 				</configuration>
 			</plugin>

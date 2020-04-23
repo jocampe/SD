@@ -21,12 +21,12 @@ public class Operations {
 	public Operations() {}
 		
 	
-	public Observation track(String type, String id) {
+	public synchronized Observation track(String type, String id) {
 		return object.get(id).getLastObservation();
 	}
 	
 	//observacao mais recente de cada id que der match
-	public Iterable<?extends Observation> trackMatch(String type, String id) {
+	public synchronized Iterable<?extends Observation> trackMatch(String type, String id) {
 		
 		List<Observation> lst = new ArrayList<>();
 
@@ -41,14 +41,14 @@ public class Operations {
 		return lst;
 	}
 	
-	//a ordenacao e so fazer print ao ultimo ao primeiro membro da lista
-	public Iterable<?extends Observation> trace(String type, String id) {
+	//a ordenacao e so fazer print do ultimo ao primeiro membro da lista
+	public synchronized Iterable<?extends Observation> trace(String type, String id) {
 		return object.get(id).getObservationList();
 		
 	}
-	
 
-	public void report (String name, Iterable<?extends Observation>observation){
+
+	public synchronized void report (String name, Iterable<?extends Observation>observation){
 		
 			Camera cam = _cameras.get(name);
 			if(cam != null) {

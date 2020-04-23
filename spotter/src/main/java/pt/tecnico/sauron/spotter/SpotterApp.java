@@ -1,11 +1,16 @@
 package pt.tecnico.sauron.spotter;
 
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Random;
 import java.util.Scanner;
 import io.grpc.StatusRuntimeException;
 import pt.tecnico.sauron.silo.client.SiloFrontend;
 import pt.tecnico.sauron.silo.grpc.Silo.*;
+import pt.ulisboa.tecnico.sdis.zk.ZKNamingException;
+import pt.ulisboa.tecnico.sdis.zk.ZKRecord;
+
 //import pt.tecnico.sauron.silo.grpc.Silo.G
 import com.google.protobuf.Timestamp;
 
@@ -21,7 +26,7 @@ public class SpotterApp {
 	private static final String TRAIL_CMD = "trail";
 	private static final String HELP_CMD = "help";
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ZKNamingException {
 		System.out.println(SpotterApp.class.getSimpleName());
 		
 		// receive and print arguments
@@ -31,17 +36,23 @@ public class SpotterApp {
 		}
 		
 		//check arguments
-		if(args.length < 1) {
+		if(args.length < 3) {
 			System.out.println("Argument(s) missing!");
 			System.out.printf("Usage: java %s host port%n",
 					SpotterApp.class.getName());
 			return;
 		}
-		final String host = args[0];
-		final int port = Integer.parseInt(args[1]);
-
-		try (SiloFrontend frontend = new SiloFrontend(host, port); 
-				Scanner scanner = new Scanner(System.in)){
+		final String zkhost = args[0];
+		final String zkport = args[1];
+		final String replica;
+		if (args.length == 3)
+			replica = args[2];
+		else
+			replica = "0";
+		
+		SiloFrontend frontend = new SiloFrontend(zkhost, zkport, replica);
+		
+		try (Scanner scanner = new Scanner(System.in)){
 			while (true) {
 				try {
 					String line = scanner.nextLine();
@@ -51,6 +62,7 @@ public class SpotterApp {
 					
 					else if (SPOT_CMD.equals(arrOfStr[0])) {
 						//verificar se tem *
+						//Comando Spot(trackmatch)
 						if(arrOfStr[2].indexOf("*") != -1) {
 							TrackMatchRequest tmRequest = TrackMatchRequest.newBuilder()
 									.setType(arrOfStr[1])
@@ -72,6 +84,7 @@ public class SpotterApp {
 						/*lon*/			camInfoResponse.getCoordinates().getLon());
 							}
 						}
+						//Comando Spot (track)
 						else {
 							TrackRequest tRequest = TrackRequest.newBuilder()
 									.setType(arrOfStr[1])
@@ -90,7 +103,7 @@ public class SpotterApp {
 									camInfoResponse.getCoordinates().getLon());
 						}
 					}
-					
+					//Comando trail (trace)
 					if (TRAIL_CMD.equals(arrOfStr[0])) {
 						TraceResponse response = frontend.trace(TraceRequest.newBuilder().setType(arrOfStr[1]).setId(arrOfStr[2]).build());
 						CamInfoResponse camInfoResponse;
@@ -102,6 +115,7 @@ public class SpotterApp {
 									arrOfStr[1] + "," + 
 									response.getObservation(i).getId() + "," + 
 									localDateTime + "," +
+									response.getObservation(i).getCamera() + "," +
 									camInfoResponse.getCoordinates().getLat() + "," + 
 									camInfoResponse.getCoordinates().getLon());
 						}

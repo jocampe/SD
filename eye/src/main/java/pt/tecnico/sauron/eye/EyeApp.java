@@ -1,8 +1,10 @@
 package pt.tecnico.sauron.eye;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Random;
 
 import com.google.protobuf.Timestamp;
 
@@ -13,7 +15,7 @@ import pt.tecnico.sauron.silo.grpc.Silo.*;
 
 public class EyeApp {
 	private static final String SLEEP_CMD = "zzz";
-	private static final String CMT_CMD = "#";
+	//private static final String CMT_CMD = "#";
 	private static final String FLUSH_CMD = "";
 	private static List<ObservationGrpc> _obsList = new ArrayList<>();
 	
@@ -28,21 +30,25 @@ public class EyeApp {
 			System.out.printf("arg[%d] = %s%n", i, args[i]);
 		}
 		
-		// check arguments
+		// check arguments. Must be either 5 or 6.
 		if (args.length < 4) {
 			System.out.println("Argument(s) missing!");
 			System.out.printf("Usage: java %s host port%n", EyeApp.class.getName());
 			return;
 		}
 		
-		final String host = args[0];
-		final int port = Integer.parseInt(args[1]);
-		final String target = host + ":" + port;
+		final String zkhost = args[0];
+		final String zkport = args[1];
 		final String name = args[2];
 		final double latitude = Double.parseDouble(args[3]);
 		final double longitude = Double.parseDouble(args[4]);
+		final String replica;
+		if (args.length == 5)
+			replica = args[5]; 
+		else
+			replica = "0";
 		
-		SiloFrontend frontend = new SiloFrontend(host, port);
+		SiloFrontend frontend = new SiloFrontend(zkhost, zkport, replica);
 		
 		//cam_join -> login da camera
 		CamJoinRequest request = CamJoinRequest.newBuilder()

@@ -19,8 +19,16 @@
 		<!-- see parent POM for more properties -->
 
 		<mainclass>pt.tecnico.sauron.silo.SiloServerApp</mainclass>
-		<server.port>8080</server.port>
+		
+		<zoo.host>localhost</zoo.host>
+		<zoo.port>2181</zoo.port>
+		<server.host>localhost</server.host>
+		<instance>1</instance>
+		<server.port>808${instance}</server.port>
+		<server.path>/grpc/sauron/silo/${instance}</server.path>
+		
 	</properties>
+	
 
 	<dependencies>
 		<!-- contract brings gRPC dependencies with it -->
@@ -28,6 +36,12 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>silo-contract</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+		<!-- ZK Naming -->
+		<dependency>
+		    <groupId>pt.ulisboa.tecnico.sdis</groupId>
+		    <artifactId>zk-naming</artifactId>
+		    <version>1.0.3</version>
 		</dependency>
 	</dependencies>
 
@@ -69,7 +83,11 @@
 				<configuration>
 					<mainClass>${mainclass}</mainClass>
 					<arguments>
-						<argument>${server.port}</argument>
+					    <argument>${zoo.host}</argument>
+					    <argument>${zoo.port}</argument>
+					    <argument>${server.host}</argument>
+					    <argument>${server.port}</argument>
+					    <argument>${server.path}</argument>
 					</arguments>
 				</configuration>
 			</plugin>

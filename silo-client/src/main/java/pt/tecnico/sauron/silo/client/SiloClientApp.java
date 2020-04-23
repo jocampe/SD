@@ -6,10 +6,11 @@ import pt.tecnico.sauron.silo.client.SiloFrontend;
 import pt.tecnico.sauron.silo.grpc.Silo.ClearRequest;
 import pt.tecnico.sauron.silo.grpc.Silo.PingRequest;
 import pt.tecnico.sauron.silo.grpc.Silo.PingResponse;
+import pt.ulisboa.tecnico.sdis.zk.ZKNamingException;
 
 public class SiloClientApp {
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ZKNamingException {
 		System.out.println(SiloClientApp.class.getSimpleName());
 		
 		// receive and print arguments
@@ -18,11 +19,15 @@ public class SiloClientApp {
 			System.out.printf("arg[%d] = %s%n", i, args[i]);
 		}
 		
-		final String host = args[0];
-		final int port = Integer.parseInt(args[1]);
+		
+		final String zooHost = args[0];
+		final String zooPort = args[1];
+		final String path = args[2];
+		final String host = args[3];
+		final int port = Integer.parseInt(args[4]);
 		String input;
 		
-		SiloFrontend frontend = new SiloFrontend(host, port);
+		SiloFrontend frontend = new SiloFrontend(zooHost, zooPort, path);
 
 		try(Scanner scanner = new Scanner(System.in)) {
 			do {

@@ -1,4 +1,4 @@
-package pt.tecnico.sauron.silo.client;
+/*package pt.tecnico.sauron.silo.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -38,7 +38,7 @@ public class TrackIT {
 
     @BeforeEach
     public void setUp() {
-        frontend = new SiloFrontend("localhost", 8080);
+        //frontend = new SiloFrontend("localhost", 8080);
     }
 
     @AfterEach
@@ -70,3 +70,4 @@ public class TrackIT {
     }
 
 }
+*/
