@@ -13,7 +13,8 @@ import pt.tecnico.sauron.silo.grpc.SiloServiceGrpc;
 public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 	
 	private Operations op = new Operations();
-
+	
+	//Transform - Transforma uma observacao local em observacao grpc
 	public ObservationGrpc transform(Observation observation) { 
 		return ObservationGrpc.newBuilder()
 				.setType(observation.getType()) 
@@ -22,6 +23,7 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 				.setCamera(observation.getCam())
 				.build();
 	}
+	//TransformList2 - Transforma uma lista de observacao grpc em observacao local
 	public Iterable<?extends Observation> transformList2(Iterable<?extends ObservationGrpc> lst) {
 		List<Observation> obsLst = new ArrayList<>();
 		for(ObservationGrpc element : lst)
@@ -31,14 +33,14 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 		}
 		return obsLst;
 	}
-	
+	//TransformCoord - transforma coordenadas locais em coordenadas grpc
 	public CoordinatesGrpc transformCoord(Coordinates coordinates) {
 		return CoordinatesGrpc.newBuilder()
 				.setLat(coordinates.getLat())
 				.setLon(coordinates.getLon())
 				.build();
 	}
-	
+	//TransformList - Transforma uma lista de observacao local em uma lista de observacao grpc
 	public Iterable<?extends ObservationGrpc> transformList(Iterable<?extends Observation> lst) {
 		List<ObservationGrpc> grpcLst = new ArrayList<>();
 		for(Observation element : lst)

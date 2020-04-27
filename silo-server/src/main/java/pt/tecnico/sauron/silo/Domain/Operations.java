@@ -20,12 +20,14 @@ public class Operations {
 	
 	public Operations() {}
 		
-	
+	//Track - Permite localizar um objeto observado
 	public Observation track(String type, String id) {
 		return object.get(id).getLastObservation();
 	}
 	
-	//observacao mais recente de cada id que der match
+	
+	//TrackMatch -  Permite localizar um objeto observado com parte do seu identificador
+	//Observacao mais recente de cada id que der match
 	public Iterable<?extends Observation> trackMatch(String type, String id) {
 		
 		List<Observation> lst = new ArrayList<>();
@@ -41,13 +43,14 @@ public class Operations {
 		return lst;
 	}
 	
-	//a ordenacao e so fazer print ao ultimo ao primeiro membro da lista
+	//Trace - Permite obter o rasto de um objeto observado
+	//a ordenacao consiste em fazer print ao ultimo ao primeiro membro da lista
 	public Iterable<?extends Observation> trace(String type, String id) {
 		return object.get(id).getObservationList();
 		
 	}
 	
-
+	//Report - recebe observacoes, registando as mesmas
 	public void report (String name, Iterable<?extends Observation>observation){
 		
 			Camera cam = _cameras.get(name);
@@ -77,7 +80,7 @@ public class Operations {
 			}
 			
 	}
-
+	//Cam_join - regista uma camera
 	public synchronized void cam_join(String name, double latitude, double longitude){
 		   	if(name.length()<3 || name.length()>15) { //FIXME alphanumeric
 		   		//throw new InvalidCameraNameException();
@@ -90,7 +93,7 @@ public class Operations {
 		   	Camera eye = new Camera(name, latitude, longitude);
 		   	_cameras.put(name, eye);
 		}
-
+	//Cam_info - recebe o nome de uma camera e devolve as suas coordenadas de localizacao
 		public synchronized Coordinates cam_info(String name){
 			if(_cameras.get(name).equals(null)) {
 				//throw new NoSuchCameraException();

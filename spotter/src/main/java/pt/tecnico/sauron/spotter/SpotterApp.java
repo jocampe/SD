@@ -46,9 +46,9 @@ public class SpotterApp {
 				try {
 					String line = scanner.nextLine();
 					String[] arrOfStr = line.split(" "); 
-					
+					//Help command
 					if (HELP_CMD.equals(arrOfStr[0])) {System.out.println("Available commands: spot, trail;");}
-					
+					//Spot command
 					else if (SPOT_CMD.equals(arrOfStr[0])) {
 						//verificar se tem *
 						if(arrOfStr[2].indexOf("*") != -1) {
@@ -90,14 +90,14 @@ public class SpotterApp {
 									camInfoResponse.getCoordinates().getLon());
 						}
 					}
-					
+					//Trail command
 					if (TRAIL_CMD.equals(arrOfStr[0])) {
 						TraceResponse response = frontend.trace(TraceRequest.newBuilder().setType(arrOfStr[1]).setId(arrOfStr[2]).build());
 						CamInfoResponse camInfoResponse;
 						int size = response.getObservationCount();
 						for(int i=0; i<size; i++) {
 							camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation(i).getCamera()).build());
-							LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(response.getObservation(i).getTime().getSeconds()), ZoneId.systemDefault());
+							LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(response.getObservation(i).getTime().getSeconds()), ZoneId.systemDefault()); //Date transformation
 							System.out.println(
 									arrOfStr[1] + "," + 
 									response.getObservation(i).getId() + "," + 
