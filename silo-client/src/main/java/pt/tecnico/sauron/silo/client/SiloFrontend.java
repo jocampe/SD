@@ -1,14 +1,12 @@
 package pt.tecnico.sauron.silo.client;
 
-import java.util.Collection;
-import java.util.Random;
-
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
+import io.grpc.Status;
 import pt.tecnico.sauron.silo.grpc.Silo.*;
 import pt.tecnico.sauron.silo.grpc.SiloServiceGrpc;
 import pt.ulisboa.tecnico.sdis.zk.ZKNaming;
-import pt.ulisboa.tecnico.sdis.zk.ZKNamingException;
 import pt.ulisboa.tecnico.sdis.zk.ZKRecord;
 
 
@@ -16,94 +14,61 @@ public class SiloFrontend implements AutoCloseable {
 	
 	private final ManagedChannel channel;
 	private final SiloServiceGrpc.SiloServiceBlockingStub stub;
-	ZKNaming zkNaming;
-	private String _path = "/grpc/sauron/silo";
-	private String target;
 	
-	public SiloFrontend(String zooHost, String zooPort, String replica) {
-		try {
-			this.zkNaming = new ZKNaming(zooHost,zooPort);
-			this.setClientPath(replica);
-			// lookup
-			ZKRecord record = zkNaming.lookup(_path);
-			target = record.getURI();
-
-		} catch (ZKNamingException e) {
-			e.printStackTrace();
+	public SiloFrontend(String zooHost, String zooPort, String path) {
+		// Channel is the abstraction to connect to a service endpoint.
+		// Let us use plaintext communication because we do not have certificates.
+		
+		// receive and print arguments
+		/*
+		System.out.printf("Received %d arguments%n", args.length);
+		for (int i = 0; i < args.length; i++) {
+			System.out.printf("arg[%d] = %s%n", i, args[i]);
 		}
+		*/
+		
+		ZKNaming zkNaming = new ZKNaming(zooHost, zooPort);
+		
+		// lookup
+		ZKRecord record = zkNaming.lookup(path);
+		String target = record.getURI();
+		
 		this.channel = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
+
+		// Create a blocking stub.
 		stub = SiloServiceGrpc.newBlockingStub(channel);
+	
 	}
 	
-	public void setClientPath(String replica) {
-		//se encontra 0 ->erro, 1->escolhe esse ou n->random
-		//verificar se o num da replica e ou nao fornecido
-		System.out.println("replica received: " + replica);
-		if(replica.equals("0")) {
-			System.out.println("it is 0");
-			Collection<ZKRecord> repCollection;
-			try {
-				repCollection = this.getRecords();
-				
-				int size = repCollection.size();
-				if(size == 0) {
-					//error
-				}
-				else if(size == 1) {
-					System.out.println("size 1");
-					_path = repCollection.toArray(ZKRecord[]::new)[0].getPath();
-				}
-				else {
-					System.out.println("size more than 1");
-					Random rand = new Random();
-					int randNumber = rand.nextInt(size-1);
-					_path = repCollection.toArray(ZKRecord[]::new)[randNumber].getPath();
-				}
-			} catch (ZKNamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
-	
-		}
-		else {
-			_path += "/" + replica;
-		}
-		System.out.println("THIS IS THE CLIENT PATH:" + _path);	
-	}
-	
-	public Collection<ZKRecord> getRecords() throws ZKNamingException {
-		System.out.println("current path: " + _path);
-		return this.zkNaming.listRecords(_path);
-	}
-	
-	public synchronized PingResponse setPing(PingRequest request) {
+	public PingResponse setPing(PingRequest request) {
 		return stub.ping(request);
 	}
-	public synchronized ClearResponse setClear(ClearRequest request) {
+	
+	public ClearResponse setClear(ClearRequest request) {
 		return stub.clear(request);
 	}
 	
-	public synchronized TrackResponse track(TrackRequest request) {
+	public TrackResponse track(TrackRequest request) {
 		return stub.track(request);
 	}
 	
-	public synchronized TraceResponse trace(TraceRequest request) {
+	public TraceResponse trace(TraceRequest request) {
 		return stub.trace(request);
 	}
 	
-	public synchronized CamJoinResponse camJoin(CamJoinRequest request) {
+	public CamJoinResponse camJoin(CamJoinRequest request) {
 		return stub.camJoin(request);
 	}
 	
-	public synchronized CamInfoResponse camInfo(CamInfoRequest request) {
+	public CamInfoResponse camInfo(CamInfoRequest request) {
 		return stub.camInfo(request);
 	}
 	
-	public synchronized ReportResponse report(ReportRequest request) {
+	public ReportResponse report(ReportRequest request) {
 		return stub.report(request);
 	}
 	
-	public synchronized TrackMatchResponse trackMatch(TrackMatchRequest request) {
+	public TrackMatchResponse trackMatch(TrackMatchRequest request) {
 		return stub.trackMatch(request);
 	}
 

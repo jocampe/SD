@@ -4,7 +4,11 @@ import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import pt.ulisboa.tecnico.sdis.zk.ZKNaming;
+<<<<<<< HEAD
+
+=======
 import pt.ulisboa.tecnico.sdis.zk.ZKNamingException;
+>>>>>>> 53c02dd17fc5c9971e04780fc9d2a194ecaa0f79
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -12,7 +16,11 @@ import java.util.Scanner;
 
 public class SiloServerApp {
 	
+<<<<<<< HEAD
+	public static void main(String[] args) throws Exception{
+=======
 	public static void main(String[] args) throws IOException, InterruptedException, ZKNamingException {
+>>>>>>> 53c02dd17fc5c9971e04780fc9d2a194ecaa0f79
 		System.out.println(SiloServerApp.class.getSimpleName());
 		
 		// receive and print arguments
@@ -27,6 +35,22 @@ public class SiloServerApp {
 			System.err.printf("Usage: java %s path zooHost zooPort host port%n", Server.class.getName());
 			return;
 		}
+<<<<<<< HEAD
+		
+		final String zooHost = args[0];
+		final String zooPort = args[1];
+		final String path = args[2];
+		final String host = args[3];
+		final String port = args[4];
+		final BindableService impl = new ServerImpl();
+		ZKNaming zkNaming = null;
+		try {
+		zkNaming = new ZKNaming(zooHost, zooPort);
+		// publish
+		zkNaming.rebind(path, host, port);
+		// Create a new server to listen on port
+		Server server = ServerBuilder.forPort(Integer.parseInt(port)).addService(impl).build();
+=======
 
 		final String zooHost = args[0];
 		final String zooPort = args[1];
@@ -35,6 +59,7 @@ public class SiloServerApp {
 		final String path = args[4];
 		final BindableService impl = new ServerImpl();
 		ZKNaming zkNaming = null;
+>>>>>>> 53c02dd17fc5c9971e04780fc9d2a194ecaa0f79
 
 		try {
 
@@ -56,12 +81,23 @@ public class SiloServerApp {
 
 			server.shutdown();
 
+<<<<<<< HEAD
+		// Do not exit the main thread. Wait until server is terminated.
+		server.awaitTermination();
+		}
+		finally  {
+		    if (zkNaming != null) {
+		        // remove
+		        zkNaming.unbind(path,host,port);
+		    }
+=======
 			
 		} finally {
 			if (zkNaming != null) {
 				// remove
 				zkNaming.unbind(path, host, port);
 			}
+>>>>>>> 53c02dd17fc5c9971e04780fc9d2a194ecaa0f79
 		}
 	}
 	
