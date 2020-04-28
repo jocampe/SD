@@ -1,28 +1,19 @@
 package pt.tecnico.sauron.spotter;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import java.util.Scanner;
 import io.grpc.StatusRuntimeException;
+import io.grpc.Status;
 import pt.tecnico.sauron.silo.client.SiloFrontend;
 import pt.tecnico.sauron.silo.grpc.Silo.*;
-import pt.ulisboa.tecnico.sdis.zk.ZKNamingException;
-import pt.ulisboa.tecnico.sdis.zk.ZKRecord;
-
 //import pt.tecnico.sauron.silo.grpc.Silo.G
-import com.google.protobuf.Timestamp;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 
 
 
@@ -32,7 +23,7 @@ public class SpotterApp {
 	private static final String HELP_CMD = "help";
 	private static List<Integer> prev;
 	
-	public static void main(String[] args) throws ZKNamingException {
+	public static void main(String[] args) {
 		System.out.println(SpotterApp.class.getSimpleName());
 		
 		// receive and print arguments
@@ -42,22 +33,18 @@ public class SpotterApp {
 		}
 		
 		//check arguments
-		if(args.length < 3) {
+		if(args.length < 1) {
 			System.out.println("Argument(s) missing!");
 			System.out.printf("Usage: java %s host port%n",
 					SpotterApp.class.getName());
 			return;
 		}
-		final String zkhost = args[0];
-		final String zkport = args[1];
-		final String replica;
-		if (args.length == 3)
-			replica = args[2];
-		else
-			replica = "0";
 		
-		SiloFrontend frontend = new SiloFrontend(zkhost, zkport, replica);
-		
+
+		final String zooHost = args[0];
+		final String zooPort = args[1];
+		final String path = args[2];
+		SiloFrontend frontend = new SiloFrontend(zooHost, zooPort, path);
 		prev = new ArrayList<>(Arrays.asList(new Integer[frontend.getRepCount()]));
 		Collections.fill(prev, 0);
 		
@@ -70,34 +57,41 @@ public class SpotterApp {
 					if (HELP_CMD.equals(arrOfStr[0])) {System.out.println("Available commands: spot, trail;");}
 					
 					else if (SPOT_CMD.equals(arrOfStr[0])) {
+						
 						//verificar se tem *
 						//Comando Spot(trackmatch)
 						if(arrOfStr[2].indexOf("*") != -1) {
-							TrackMatchRequest tmRequest = TrackMatchRequest.newBuilder()
-									.setType(arrOfStr[1])
-									.setId(arrOfStr[2])
-									.addAllPrev(prev)
-									.build();
-							TrackMatchResponse response = frontend.trackMatch(tmRequest);
-							prev = response.getNewList();
-							CamInfoResponse camInfoResponse;
-							int size = response.getObservationCount();
-							for(int i=0; i<size; i++) {
-								//cam_info para ir buscar as coordenadas
-								camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation(i).getCamera()).addAllPrev(prev).build());
+							try {
+								TrackMatchRequest tmRequest = TrackMatchRequest.newBuilder()
+										.setType(arrOfStr[1])
+										.setId(arrOfStr[2])
+										.addAllPrev(prev)
+										.build();
+								TrackMatchResponse response = frontend.trackMatch(tmRequest);
 								prev = response.getNewList();
-								LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(response.getObservation(i).getTime().getSeconds()), ZoneId.systemDefault());
-								System.out.println(
-						/*type*/		arrOfStr[1] + "," + 
-						/*Id*/			response.getObservation(i).getId() + "," + 
-						/*time*/		localDateTime + "," +
-						/*cam*/			response.getObservation(i).getCamera() + "," + 
-						/*lat*/			camInfoResponse.getCoordinates().getLat() + "," + 
-						/*lon*/			camInfoResponse.getCoordinates().getLon());
-							}
+								CamInfoResponse camInfoResponse;
+								int size = response.getObservationCount();
+								for(int i=0; i<size; i++) {
+									//cam_info para ir buscar as coordenadas
+									camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation(i).getCamera()).addAllPrev(prev).build());
+									prev = response.getNewList();
+									LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(response.getObservation(i).getTime().getSeconds()), ZoneId.systemDefault());
+									System.out.println(
+							/*type*/		arrOfStr[1] + "," + 
+							/*Id*/			response.getObservation(i).getId() + "," + 
+							/*time*/		localDateTime + "," +
+							/*cam*/			response.getObservation(i).getCamera() + "," + 
+							/*lat*/			camInfoResponse.getCoordinates().getLat() + "," + 
+							/*lon*/			camInfoResponse.getCoordinates().getLon());
+								}
+						  }		catch (StatusRuntimeException e) {
+				    	        Status status = e.getStatus();
+				    	        System.out.println(status.getDescription());
+				    	   		}
 						}
 						//Comando Spot (track)
 						else {
+							try {
 							TrackRequest tRequest = TrackRequest.newBuilder()
 									.setType(arrOfStr[1])
 									.setId(arrOfStr[2])
@@ -116,30 +110,41 @@ public class SpotterApp {
 									response.getObservation().getCamera() + "," +
 									camInfoResponse.getCoordinates().getLat() + "," + 
 									camInfoResponse.getCoordinates().getLon());
+							}	catch (StatusRuntimeException e) {
+				    	        Status status = e.getStatus();
+				    	        System.out.println(status.getDescription());
+				    	   }
+							
 						}
 					}
 					//Comando trail (trace)
 					if (TRAIL_CMD.equals(arrOfStr[0])) {
-						TraceResponse response = frontend.trace(TraceRequest.newBuilder()
-								.setType(arrOfStr[1])
-								.setId(arrOfStr[2])
-								.addAllPrev(prev)
-								.build());
-						prev = response.getNewList();
-						CamInfoResponse camInfoResponse;
-						int size = response.getObservationCount();
-						for(int i=0; i<size; i++) {
-							camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation(i).getCamera()).addAllPrev(prev).build());
-							prev = camInfoResponse.getNewList();
-							LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(response.getObservation(i).getTime().getSeconds()), ZoneId.systemDefault());
-							System.out.println(
-									arrOfStr[1] + "," + 
-									response.getObservation(i).getId() + "," + 
-									localDateTime + "," +
-									response.getObservation(i).getCamera() + "," +
-									camInfoResponse.getCoordinates().getLat() + "," + 
-									camInfoResponse.getCoordinates().getLon());
+						try {
+							TraceResponse response = frontend.trace(TraceRequest.newBuilder()
+									.setType(arrOfStr[1])
+									.setId(arrOfStr[2])
+									.addAllPrev(prev)
+									.build());
+							prev = response.getNewList();
+							CamInfoResponse camInfoResponse;
+							int size = response.getObservationCount();
+							for(int i=0; i<size; i++) {
+								camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation(i).getCamera()).addAllPrev(prev).build());
+								prev = camInfoResponse.getNewList();
+								LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(response.getObservation(i).getTime().getSeconds()), ZoneId.systemDefault());
+								System.out.println(
+										arrOfStr[1] + "," + 
+										response.getObservation(i).getId() + "," + 
+										localDateTime + "," +
+										response.getObservation(i).getCamera() + "," +
+										camInfoResponse.getCoordinates().getLat() + "," + 
+										camInfoResponse.getCoordinates().getLon());
 						}
+						} catch (StatusRuntimeException e) {
+			    	        Status status = e.getStatus();
+			    	        System.out.println(status.getDescription());
+						  } 
+
 						/*
 						String id = getResponse.getObservation().getId();
 						Timestamp timestamp = getResponse.getObservation().getTime();

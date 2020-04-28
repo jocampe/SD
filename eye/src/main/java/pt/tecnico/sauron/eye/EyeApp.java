@@ -6,18 +6,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Random;
 
 import com.google.protobuf.Timestamp;
 
 import io.grpc.StatusRuntimeException;
+import io.grpc.Status;
 import pt.tecnico.sauron.silo.client.SiloFrontend;
 
 import pt.tecnico.sauron.silo.grpc.Silo.*;
 
 public class EyeApp {
 	private static final String SLEEP_CMD = "zzz";
-	//private static final String CMT_CMD = "#";
+	private static final String CMT_CMD = "#";
 	private static final String FLUSH_CMD = "";
 	private static List<ObservationGrpc> _obsList = new ArrayList<>();
 	private static List<Integer> prev;	
@@ -32,11 +32,11 @@ public class EyeApp {
 		}
 		
 		// check arguments. Must be either 5 or 6.
-		if (args.length < 4) {
-			System.out.println("Argument(s) missing!");
-			System.out.printf("Usage: java %s host port%n", EyeApp.class.getName());
-			return;
-		}
+				if (args.length < 4) {
+					System.out.println("Argument(s) missing!");
+					System.out.printf("Usage: java %s host port%n", EyeApp.class.getName());
+					return;
+				}
 		
 		final String zkhost = args[0];
 		final String zkport = args[1];
@@ -55,13 +55,21 @@ public class EyeApp {
 		Collections.fill(prev, 0);
 		
 		//cam_join -> login da camera
+		try {
 		CamJoinRequest request = CamJoinRequest.newBuilder()
 				.setName(name)
 				.setCoordinates(CoordinatesGrpc.newBuilder()
 						.setLat(latitude)
-						.setLon(longitude).build()).build();
+						.setLon(longitude)
+						.build())
+				.build();
 		frontend.camJoin(request);
 
+		}
+		catch (StatusRuntimeException e) {
+			System.out.println("Caught Exception with description" + e.getStatus().getDescription());
+		}
+		
 		try(Scanner scanner = new Scanner(System.in)) {
 			  // Check if camera doesn't exist frontend.getCamera(name);
 			  while(true) {
@@ -85,6 +93,7 @@ public class EyeApp {
 			      
 			      //report -> envia observacoes para o servidor
 			      else if (FLUSH_CMD.equals(array[0])) {
+			    	  try {
 			    	  ReportRequest rRequest = ReportRequest.newBuilder()
 			    			  .setName(name)
 			    			  .addAllObservation(_obsList)
@@ -94,6 +103,12 @@ public class EyeApp {
 			    	  //update prev
 			    	  prev = response.getNewList();
 			    	  _obsList.clear();
+			    	  }
+			    	  catch (StatusRuntimeException e) {
+			    	        Status status = e.getStatus();
+			    	        System.out.println(status.getDescription());
+			    	   }
+			    	  
 			          continue;
 			      }
 			      
