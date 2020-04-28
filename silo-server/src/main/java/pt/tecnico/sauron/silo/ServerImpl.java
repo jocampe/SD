@@ -80,8 +80,10 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 	
 	@Override
 	public void track(TrackRequest request, StreamObserver<TrackResponse> responseObserver) {
-		TrackResponse response = 
-				TrackResponse.newBuilder().setObservation(transform(this.op.track(request.getType(), request.getId()))).build();
+		TrackResponse response = TrackResponse.newBuilder()
+				.setObservation(transform(this.op.track(request.getType(), request.getId())))
+				.addAllNew(this.op.timestampUpdate(request.getPrevList()))
+				.build();
 		responseObserver.onNext(response);
 	    responseObserver.onCompleted();					
 	}
@@ -90,7 +92,9 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 	public void trackMatch(TrackMatchRequest request, StreamObserver<TrackMatchResponse> responseObserver) {
 		TrackMatchResponse response = 
 				TrackMatchResponse.newBuilder()
-				.addAllObservation(this.transformList(op.trackMatch(request.getType(), request.getId()))).build();
+				.addAllObservation(this.transformList(this.op.trackMatch(request.getType(), request.getId())))
+				.addAllNew(this.op.timestampUpdate(request.getPrevList()))
+				.build();
 		responseObserver.onNext(response);
 	    responseObserver.onCompleted();
 	}
@@ -99,14 +103,16 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 	public void trace(TraceRequest request, StreamObserver<TraceResponse> responseObserver) {
 		TraceResponse response = 
 				TraceResponse.newBuilder()
-				.addAllObservation(this.transformList(op.trace(request.getType(), request.getId()))).build();
+				.addAllObservation(this.transformList(this.op.trace(request.getType(), request.getId())))
+				.addAllNew(this.op.timestampUpdate(request.getPrevList()))
+				.build();
 		responseObserver.onNext(response);
 	    responseObserver.onCompleted();
 	}
 	
 	@Override
 	public void report(ReportRequest request, StreamObserver<ReportResponse> responseObserver) {
-		ReportResponse response = ReportResponse.getDefaultInstance();
+		ReportResponse response = ReportResponse.newBuilder().addAllNew(this.op.timestampUpdate(request.getPrevList())).build();
 		op.report(request.getName(), this.transformList2(request.getObservationList()));
 		responseObserver.onNext(response);
 	    responseObserver.onCompleted();					
@@ -116,7 +122,7 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 	@Override
 	public void camJoin(CamJoinRequest request, StreamObserver<CamJoinResponse> responseObserver) {
 	  CamJoinResponse response = CamJoinResponse.getDefaultInstance();
-	  op.cam_join(request.getName(), request.getCoordinates().getLat(), request.getCoordinates().getLon());
+	  this.op.cam_join(request.getName(), request.getCoordinates().getLat(), request.getCoordinates().getLon());
 	  responseObserver.onNext(response);
 	  responseObserver.onCompleted();
 	}
@@ -124,7 +130,10 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 	
 	@Override
 	public void camInfo(CamInfoRequest request, StreamObserver<CamInfoResponse> responseObserver) {
-	  CamInfoResponse response = CamInfoResponse.newBuilder().setCoordinates(this.transformCoord((op.cam_info(request.getName())))).build();
+	  CamInfoResponse response = CamInfoResponse.newBuilder()
+			  .setCoordinates(this.transformCoord((op.cam_info(request.getName()))))
+			  .addAllNew(this.op.timestampUpdate(request.getPrevList()))
+			  .build();
 	  responseObserver.onNext(response);
 	  responseObserver.onCompleted();
 	  	}

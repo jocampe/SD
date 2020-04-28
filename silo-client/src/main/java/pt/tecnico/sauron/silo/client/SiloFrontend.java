@@ -19,11 +19,13 @@ public class SiloFrontend implements AutoCloseable {
 	ZKNaming zkNaming;
 	private String _path = "/grpc/sauron/silo";
 	private String target;
+	private int repCount;
 	
 	public SiloFrontend(String zooHost, String zooPort, String replica) {
 		try {
 			this.zkNaming = new ZKNaming(zooHost,zooPort);
 			this.setClientPath(replica);
+			this.setRepCount();
 			// lookup
 			ZKRecord record = zkNaming.lookup(_path);
 			target = record.getURI();
@@ -35,34 +37,32 @@ public class SiloFrontend implements AutoCloseable {
 		stub = SiloServiceGrpc.newBlockingStub(channel);
 	}
 	
-	public void setClientPath(String replica) {
+	public void setClientPath(String replica) throws ZKNamingException {
 		//se encontra 0 ->erro, 1->escolhe esse ou n->random
 		//verificar se o num da replica e ou nao fornecido
 		System.out.println("replica received: " + replica);
 		if(replica.equals("0")) {
 			System.out.println("it is 0");
 			Collection<ZKRecord> repCollection;
-			try {
-				repCollection = this.getRecords();
-				
-				int size = repCollection.size();
-				if(size == 0) {
-					//error
-				}
-				else if(size == 1) {
-					System.out.println("size 1");
-					_path = repCollection.toArray(ZKRecord[]::new)[0].getPath();
-				}
-				else {
-					System.out.println("size more than 1");
-					Random rand = new Random();
-					int randNumber = rand.nextInt(size-1);
-					_path = repCollection.toArray(ZKRecord[]::new)[randNumber].getPath();
-				}
-			} catch (ZKNamingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
+			
+			repCollection = this.getRecords();
+			
+			int size = repCollection.size();
+			System.out.println("size: "+size);
+			if(size == 0) {
+				//error
+			}
+			else if(size == 1) {
+				System.out.println("size 1");
+				_path = repCollection.toArray(ZKRecord[]::new)[0].getPath();
+			}
+			else {
+				System.out.println("size more than 1");
+				Random rand = new Random();
+				int randNumber = rand.nextInt(size-1);
+				_path = repCollection.toArray(ZKRecord[]::new)[randNumber].getPath();
+			}
+			
 	
 		}
 		else {
@@ -74,6 +74,12 @@ public class SiloFrontend implements AutoCloseable {
 	public Collection<ZKRecord> getRecords() throws ZKNamingException {
 		System.out.println("current path: " + _path);
 		return this.zkNaming.listRecords(_path);
+	}
+	public void setRepCount() throws ZKNamingException {
+		repCount = getRecords().size();
+	}
+	public int getRepCount() {
+		return repCount;
 	}
 	
 	public synchronized PingResponse setPing(PingRequest request) {

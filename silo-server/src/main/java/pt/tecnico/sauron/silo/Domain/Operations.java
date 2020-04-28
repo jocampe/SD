@@ -4,6 +4,8 @@ import com.google.protobuf.Timestamp;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -17,10 +19,21 @@ public class Operations {
 	
 	private Map<String,Object> object = new TreeMap<>();
 	private Map<String,Camera> _cameras = new TreeMap<>();
+	private List<Integer> valueTimestamp = new ArrayList<>(Arrays.asList(new Integer[4]));
 	
-	public Operations() {}
+	public Operations() {
+		Collections.fill(valueTimestamp, 0);
+	}
 		
-	
+	//verifica se pedido.prev <= value timestamp
+	public synchronized List<Integer> timestampUpdate(List<Integer> prev) {
+		for (int i=0; i<prev.size(); i++) {
+			if (prev.get(i) > valueTimestamp.get(i))
+				;    //FICAR PENDENTE
+		}
+		return valueTimestamp;
+	}
+
 	public synchronized Observation track(String type, String id) {
 		return object.get(id).getLastObservation();
 	}

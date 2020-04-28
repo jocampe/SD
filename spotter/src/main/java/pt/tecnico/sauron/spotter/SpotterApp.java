@@ -1,8 +1,13 @@
 package pt.tecnico.sauron.spotter;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 import io.grpc.StatusRuntimeException;
@@ -25,6 +30,7 @@ public class SpotterApp {
 	private static final String SPOT_CMD = "spot";
 	private static final String TRAIL_CMD = "trail";
 	private static final String HELP_CMD = "help";
+	private static List<Integer> prev;
 	
 	public static void main(String[] args) throws ZKNamingException {
 		System.out.println(SpotterApp.class.getSimpleName());
@@ -52,6 +58,9 @@ public class SpotterApp {
 		
 		SiloFrontend frontend = new SiloFrontend(zkhost, zkport, replica);
 		
+		prev = new ArrayList<>(Arrays.asList(new Integer[frontend.getRepCount()]));
+		Collections.fill(prev, 0);
+		
 		try (Scanner scanner = new Scanner(System.in)){
 			while (true) {
 				try {
@@ -67,13 +76,16 @@ public class SpotterApp {
 							TrackMatchRequest tmRequest = TrackMatchRequest.newBuilder()
 									.setType(arrOfStr[1])
 									.setId(arrOfStr[2])
+									.addAllPrev(prev)
 									.build();
 							TrackMatchResponse response = frontend.trackMatch(tmRequest);
+							prev = response.getNewList();
 							CamInfoResponse camInfoResponse;
 							int size = response.getObservationCount();
 							for(int i=0; i<size; i++) {
 								//cam_info para ir buscar as coordenadas
-								camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation(i).getCamera()).build());
+								camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation(i).getCamera()).addAllPrev(prev).build());
+								prev = response.getNewList();
 								LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(response.getObservation(i).getTime().getSeconds()), ZoneId.systemDefault());
 								System.out.println(
 						/*type*/		arrOfStr[1] + "," + 
@@ -89,10 +101,13 @@ public class SpotterApp {
 							TrackRequest tRequest = TrackRequest.newBuilder()
 									.setType(arrOfStr[1])
 									.setId(arrOfStr[2])
+									.addAllPrev(prev)
 									.build();
 							TrackResponse response = frontend.track(tRequest);
+							prev = response.getNewList();
 							CamInfoResponse camInfoResponse;
-							camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation().getCamera()).build());
+							camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation().getCamera()).addAllPrev(prev).build());
+							prev = camInfoResponse.getNewList();
 							LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(response.getObservation().getTime().getSeconds()), ZoneId.systemDefault());
 							System.out.println(
 									arrOfStr[1] + "," + 
@@ -105,11 +120,17 @@ public class SpotterApp {
 					}
 					//Comando trail (trace)
 					if (TRAIL_CMD.equals(arrOfStr[0])) {
-						TraceResponse response = frontend.trace(TraceRequest.newBuilder().setType(arrOfStr[1]).setId(arrOfStr[2]).build());
+						TraceResponse response = frontend.trace(TraceRequest.newBuilder()
+								.setType(arrOfStr[1])
+								.setId(arrOfStr[2])
+								.addAllPrev(prev)
+								.build());
+						prev = response.getNewList();
 						CamInfoResponse camInfoResponse;
 						int size = response.getObservationCount();
 						for(int i=0; i<size; i++) {
-							camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation(i).getCamera()).build());
+							camInfoResponse = frontend.camInfo(CamInfoRequest.newBuilder().setName(response.getObservation(i).getCamera()).addAllPrev(prev).build());
+							prev = camInfoResponse.getNewList();
 							LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(response.getObservation(i).getTime().getSeconds()), ZoneId.systemDefault());
 							System.out.println(
 									arrOfStr[1] + "," + 
@@ -131,6 +152,7 @@ public class SpotterApp {
 					
 				 }catch (StatusRuntimeException e) {System.out.println(e.getStatus().getDescription());}
 			}
+			
 		}finally {System.out.println("> Closing");}
 	}
 

@@ -32,10 +32,12 @@ message CamJoinResponse {
 
 message CamInfoRequest {
 	string name = 1;
+	repeated int32 prev = 2;
 }
 
 message CamInfoResponse {
 	CoordinatesGrpc coordinates = 1;
+	repeated int32 new = 2;
 }
 
 //report - recebe o nome da camera, um conjunto de observacoes, e os dados correspondentes
@@ -43,9 +45,11 @@ message CamInfoResponse {
 message ReportRequest {
 	string name = 1;
 	repeated ObservationGrpc observation = 2;
+	repeated int32 prev = 3;
 }
 
 message ReportResponse {
+	repeated int32 new = 1;
 }
 
 
@@ -54,10 +58,12 @@ message ReportResponse {
 message TrackRequest {
 	string type = 1;
 	string id = 2;
+	repeated int32 prev = 3;
 }
 
 message TrackResponse {
 	ObservationGrpc observation = 1;
+	repeated int32 new = 2;
 }
 
 //trackMatch - same as "track" mas apenas parte do seu id (devolve mais do que um objeto)
@@ -65,10 +71,12 @@ message TrackResponse {
 message TrackMatchRequest {
 	string type = 1;
 	string id = 2;
+	repeated int32 prev = 3;
 }
 
 message TrackMatchResponse {
 	repeated ObservationGrpc observation = 1;
+	repeated int32 new = 2;
 }
 
 //trace - recebe o tipo e o id do objeto, devolve uma lista ordenada de observações do objeto
@@ -76,10 +84,12 @@ message TrackMatchResponse {
 message TraceRequest {
 	string type = 1;
 	string id = 2;
+	repeated int32 prev = 3;
 }
 
 message TraceResponse {
 	repeated ObservationGrpc observation = 1;
+	repeated int32 new = 2;
 }
 
 

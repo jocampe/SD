@@ -52,7 +52,5 @@ public class SiloClientApp {
 				}
 			} while(true);
 		}
-
-			
 	}
 }

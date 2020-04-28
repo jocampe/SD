@@ -1,7 +1,9 @@
 package pt.tecnico.sauron.eye;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Random;
@@ -18,8 +20,7 @@ public class EyeApp {
 	//private static final String CMT_CMD = "#";
 	private static final String FLUSH_CMD = "";
 	private static List<ObservationGrpc> _obsList = new ArrayList<>();
-	
-	
+	private static List<Integer> prev;	
 
 	public static void main(String[] args) {
 		System.out.println(EyeApp.class.getSimpleName());
@@ -43,12 +44,15 @@ public class EyeApp {
 		final double latitude = Double.parseDouble(args[3]);
 		final double longitude = Double.parseDouble(args[4]);
 		final String replica;
-		if (args.length == 5)
+		if (args.length == 6)
 			replica = args[5]; 
 		else
 			replica = "0";
-		
+
 		SiloFrontend frontend = new SiloFrontend(zkhost, zkport, replica);
+		
+		prev = new ArrayList<>(Arrays.asList(new Integer[frontend.getRepCount()]));
+		Collections.fill(prev, 0);
 		
 		//cam_join -> login da camera
 		CamJoinRequest request = CamJoinRequest.newBuilder()
@@ -57,7 +61,7 @@ public class EyeApp {
 						.setLat(latitude)
 						.setLon(longitude).build()).build();
 		frontend.camJoin(request);
-		
+
 		try(Scanner scanner = new Scanner(System.in)) {
 			  // Check if camera doesn't exist frontend.getCamera(name);
 			  while(true) {
@@ -83,8 +87,12 @@ public class EyeApp {
 			      else if (FLUSH_CMD.equals(array[0])) {
 			    	  ReportRequest rRequest = ReportRequest.newBuilder()
 			    			  .setName(name)
-			    			  .addAllObservation(_obsList).build();
-			    	  frontend.report(rRequest);
+			    			  .addAllObservation(_obsList)
+			    			  .addAllPrev(prev)
+			    			  .build();
+			    	  ReportResponse response = frontend.report(rRequest);
+			    	  //update prev
+			    	  prev = response.getNewList();
 			    	  _obsList.clear();
 			          continue;
 			      }

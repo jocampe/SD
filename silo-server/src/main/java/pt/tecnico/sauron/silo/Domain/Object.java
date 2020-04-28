@@ -2,6 +2,9 @@ package pt.tecnico.sauron.silo.Domain;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.collect.Lists;
+
 import pt.tecnico.sauron.silo.Domain.*;
 
 public class Object {
@@ -21,10 +24,10 @@ public class Object {
 	public String getType() {
 		return this.type;
 	}
+	//novas obs sao added no fim da lista, por isso basta inverter a ordem
 	public List<Observation> getObsList(){
-		return this.obsList;
+		return new ArrayList<>(Lists.reverse(this.obsList));
 	}
-	
 	
 	public void addObservation(Observation observation){
 		obsList.add(observation);
