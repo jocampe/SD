@@ -1,16 +1,25 @@
 package pt.tecnico.sauron.silo;
 
 import io.grpc.BindableService;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import pt.tecnico.sauron.silo.grpc.SiloServiceGrpc;
 import pt.ulisboa.tecnico.sdis.zk.ZKNaming;
 import pt.ulisboa.tecnico.sdis.zk.ZKNamingException;
+import pt.ulisboa.tecnico.sdis.zk.ZKRecord;
+import pt.tecnico.sauron.silo.kappatask;
 
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class SiloServerApp {
+	
+	
 	
 	public static void main(String[] args) throws IOException, InterruptedException, ZKNamingException {
 		System.out.println(SiloServerApp.class.getSimpleName());
@@ -32,7 +41,8 @@ public class SiloServerApp {
 		final String zooPort = args[1];
 		final String host = args[2];
 		final String port = args[3];
-		final String path = args[4];
+		String path = args[4];
+		Timer timer = new Timer(true);
 		final BindableService impl = new ServerImpl();
 		ZKNaming zkNaming = null;
 
@@ -50,9 +60,21 @@ public class SiloServerApp {
 			// Server threads are running in the background.
 			System.out.println("Server started");
 			
+			
+			String path2 = path.substring(path.length() - 1);
+			
+			int curr = Integer.parseInt(path2);
+			TimerTask task = new kappatask(zooHost, zooPort, path, zkNaming, curr);
+			timer.schedule(task ,0 , 10000);
+			
+			
+			
 			System.out.println("<Press enter to shutdown>");
 			new Scanner(System.in).nextLine();
 
+			task.cancel();
+			timer.cancel();
+			timer.purge();
 			server.shutdown();
 
 			
@@ -62,6 +84,8 @@ public class SiloServerApp {
 				zkNaming.unbind(path, host, port);
 			}
 		}
-	}
+	} 
 	
 }
+
+

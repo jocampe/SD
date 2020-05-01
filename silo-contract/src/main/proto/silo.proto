@@ -128,6 +128,11 @@ message InitRequest {
 message InitResponse {
 }
 
+
+
+
+
+
 // service
 
 service SiloService {
@@ -137,6 +142,7 @@ service SiloService {
   rpc track(TrackRequest) returns (TrackResponse);
   rpc trackMatch(TrackMatchRequest) returns (TrackMatchResponse);
   rpc trace(TraceRequest) returns (TraceResponse);
+
   
   rpc ping(PingRequest) returns (PingResponse);
   rpc clear(ClearRequest) returns (ClearResponse);
