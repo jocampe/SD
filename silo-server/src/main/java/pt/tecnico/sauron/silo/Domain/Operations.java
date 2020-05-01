@@ -21,8 +21,14 @@ public class Operations {
 	private Map<String,Camera> _cameras = new TreeMap<>();
 	private List<Integer> valueTimestamp = new ArrayList<>(Arrays.asList(new Integer[4]));
 	
+	private List<Observation> updateLogObs;
+	private List<Camera> updateLogCam;
+	private List<Integer> replicaTimestamp;
+	
 	public Operations() {
+		//init both timestamp vecs at 0
 		Collections.fill(valueTimestamp, 0);
+		replicaTimestamp = valueTimestamp;
 	}
 		
 	//verifica se pedido.prev <= value timestamp
@@ -33,6 +39,12 @@ public class Operations {
 		}
 		return valueTimestamp;
 	}
+	
+//1 - rever que operacoes fazem realmente update. no update, o metodo acima nao e o chamado. criar outro para incrementar
+//  o replicaTimestamp
+//2 - meter os updates dos comandos nas listas de updates
+//3 - timer e comunicacao replicas a funcionar entre si
+//  No silo server criar metodo de enviar info e receber info usando as listas de update info
 
 	public Observation track(String type, String id) throws NoSuchObjectException, WrongTypeException {
 		Object object = _objects.get(id);
@@ -106,7 +118,6 @@ public class Operations {
 					_objects.put(element.getId(), object2);
 					}
 					else {
-						System.out.println("morning");
 						element.setCam(name);
 						element.setLat(cam.getLatitude());
 						element.setLon(cam.getLongitude());

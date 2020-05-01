@@ -50,26 +50,28 @@ public class EyeApp {
 			replica = "0";
 
 		SiloFrontend frontend = new SiloFrontend(zkhost, zkport, replica);
-		
 		prev = new ArrayList<>(Arrays.asList(new Integer[frontend.getRepCount()]));
 		Collections.fill(prev, 0);
 		
 		//cam_join -> login da camera
 		try {
-		CamJoinRequest request = CamJoinRequest.newBuilder()
-				.setName(name)
-				.setCoordinates(CoordinatesGrpc.newBuilder()
-						.setLat(latitude)
-						.setLon(longitude)
-						.build())
-				.build();
-		frontend.camJoin(request);
+			CamJoinRequest request = CamJoinRequest.newBuilder()
+					.setName(name)
+					.setCoordinates(CoordinatesGrpc.newBuilder()
+							.setLat(latitude)
+							.setLon(longitude)
+							.build())
+					.addAllPrev(prev)
+					.build();
+			CamJoinResponse response = frontend.camJoin(request);
+			prev = response.getNewList();
 
 		}
 		catch (StatusRuntimeException e) {
 			System.out.println("Caught Exception with description" + e.getStatus().getDescription());
 		}
 		
+		System.out.println("eye input");
 		try(Scanner scanner = new Scanner(System.in)) {
 			  // Check if camera doesn't exist frontend.getCamera(name);
 			  while(true) {

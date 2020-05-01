@@ -172,7 +172,7 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 
 	@Override
 	public void camJoin(CamJoinRequest request, StreamObserver<CamJoinResponse> responseObserver) {
-	  CamJoinResponse response = CamJoinResponse.getDefaultInstance();
+	  CamJoinResponse response = CamJoinResponse.newBuilder().addAllNew(this.op.timestampUpdate(request.getPrevList())).build();
 	  try {
 		this.op.cam_join(request.getName(), request.getCoordinates().getLat(), request.getCoordinates().getLon());
 		responseObserver.onNext(response);
