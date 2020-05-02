@@ -17,7 +17,7 @@ Sistemas Distribuídos 2019-2020, segundo semestre
 | 79690  | Tomás Zaki     | <https://github.com/Zakovich> | <tomas.zaki@tecnico.ulisboa.pt>           |
 
  
-![Francisco Seixas](Francisco.png) ![Joao Pedro](Joao.png) ![Tomas Zaki](Tomas.png)
+![Francisco Seixas](francisco.png) ![Joao Pedro](joao.png) ![Tomas Zaki](tomas.png)
 
 
 ## Melhorias da primeira parte
