@@ -39,14 +39,11 @@ public  class kappatask extends TimerTask{
     { 
     	Collection<ZKRecord> repCollection;
 		try {
-			
 			String cutPath = _path.substring(0, _path.length() - 2);
 			repCollection = this._zkNaming.listRecords(cutPath);
-			System.out.println("PATH: " + cutPath);
 			
 		int size = repCollection.size();
 		String[] repPaths = new String[2];
-		System.out.println("Size: " + size);
 		
 		if(size > 1) {
 			if (size == 2) {
@@ -79,7 +76,6 @@ public  class kappatask extends TimerTask{
 				}
 			}
 			for(int i =0; i < 2; i++) {
-				System.out.println("bananas");
 				ZKRecord record = _zkNaming.lookup(repPaths[i]);
 				target = record.getURI();
 				channel = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
