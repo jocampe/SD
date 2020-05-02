@@ -8,7 +8,7 @@ Sistemas Distribuídos 2019-2020, segundo semestre
 **Grupo A05**
 
 
-*(preencher a tabela abaixo com dados da equipa; e depois apagar esta linha)*  
+
 
 | Número | Nome              | Utilizador                       | Correio eletrónico                  |
 | -------|-------------------|----------------------------------| ------------------------------------|
@@ -21,8 +21,6 @@ Sistemas Distribuídos 2019-2020, segundo semestre
 
 
 ## Melhorias da primeira parte
-
-_(que correções ou melhorias foram feitas ao código da primeira parte -- incluir link para commits no GitHub onde a alteração foi feita)_
 
 - [Fix da função trace](https://github.com/tecnico-distsys/A05-Sauron/commit/74cc2c0d91f2f4986c9b2244ae995f106d1ac5f5)
 - [Ordenação das Observações no comando trace](https://github.com/tecnico-distsys/A05-Sauron/commit/74cc2c0d91f2f4986c9b2244ae995f106d1ac5f5)
@@ -46,7 +44,7 @@ No segundo caso, caso uma réplica tente enviar uma actualização de informaç�
 
 ## Solução
 
-_(Figura da solução de tolerância a faltas)_
+
 ![Fault](fault.png)
 
 _(Breve explicação da solução, suportada pela figura anterior)_
