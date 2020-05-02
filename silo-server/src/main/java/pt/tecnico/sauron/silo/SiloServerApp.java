@@ -10,6 +10,7 @@ import pt.ulisboa.tecnico.sdis.zk.ZKNaming;
 import pt.ulisboa.tecnico.sdis.zk.ZKNamingException;
 import pt.ulisboa.tecnico.sdis.zk.ZKRecord;
 import pt.tecnico.sauron.silo.kappatask;
+import pt.tecnico.sauron.silo.Domain.Operations;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -41,15 +42,19 @@ public class SiloServerApp {
 		final String zooPort = args[1];
 		final String host = args[2];
 		final String port = args[3];
-		String path = args[4];
+		String path = "/grpc/sauron/silo";
+		int replica = Integer.parseInt(args[4]);
+		String replicaPath = path + "/" + args[4];
 		Timer timer = new Timer(true);
 		final BindableService impl = new ServerImpl();
 		ZKNaming zkNaming = null;
+		
 
 		try {
 			zkNaming = new ZKNaming(zooHost, zooPort);
 			// publish
-			zkNaming.rebind(path, host, port);
+			zkNaming.rebind(replicaPath, host, port);
+
 		
 			// Create a new server to listen on port
 			Server server = ServerBuilder.forPort(Integer.parseInt(port)).addService(impl).build();
@@ -61,10 +66,7 @@ public class SiloServerApp {
 			System.out.println("Server started");
 			
 			
-			String path2 = path.substring(path.length() - 1);
-			
-			int curr = Integer.parseInt(path2);
-			TimerTask task = new kappatask(zooHost, zooPort, path, zkNaming, curr);
+			TimerTask task = new kappatask(zooHost, zooPort, replicaPath, zkNaming, replica);
 			timer.schedule(task ,0 , 10000);
 			
 			

@@ -11,6 +11,7 @@ import pt.tecnico.sauron.silo.Domain.Exception.InvalidCameraNameException;
 import pt.tecnico.sauron.silo.Domain.Exception.NoSuchCameraException;
 import pt.tecnico.sauron.silo.Domain.Exception.NoSuchObjectException;
 import pt.tecnico.sauron.silo.Domain.Exception.WrongTypeException;
+import pt.tecnico.sauron.silo.Domain.Camera;
 import pt.tecnico.sauron.silo.Domain.Coordinates;
 import pt.tecnico.sauron.silo.Domain.Observation;
 import pt.tecnico.sauron.silo.grpc.Silo.*;
@@ -21,6 +22,7 @@ import static io.grpc.Status.NOT_FOUND;
 public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 	
 	private Operations op = new Operations();
+
 
 	public ObservationGrpc transform(Observation observation) { 
 		return ObservationGrpc.newBuilder()
@@ -46,6 +48,12 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 				.setLon(coordinates.getLon())
 				.build();
 	}
+	public CoordinatesGrpc transformCoord(Double lat, Double lon) {
+		return CoordinatesGrpc.newBuilder()
+				.setLat(lat)
+				.setLon(lon)
+				.build();
+	}
 	
 	public Iterable<?extends ObservationGrpc> transformList(Iterable<?extends Observation> lst) {
 		List<ObservationGrpc> grpcLst = new ArrayList<>();
@@ -59,6 +67,29 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 					.build());
 		}
 		return grpcLst;
+	}
+	public Iterable<?extends CameraGrpc> transformListCam(Iterable<?extends Camera> lst) {
+		List<CameraGrpc> grpcLst = new ArrayList<>();
+		for(Camera element : lst)
+		{
+			grpcLst.add(CameraGrpc.newBuilder()
+					.setCamera(element.getName())
+					.setCoordinates(this.transformCoord(element.getLatitude(), element.getLongitude()))
+					.addAllObservation(this.transformList(element.getObservation()))
+					.build());
+		}
+		return grpcLst;
+	}
+	@Override
+	public void updateMessage(UpdateMessage request, StreamObserver<UpdateMessage> responseObserver) {
+		UpdateMessage response = UpdateMessage.newBuilder()
+				.addAllRepTS(this.op.getReplicaTimestamp())
+				.addAllObservation(this.transformList(this.op.getUpdateLogObs()))
+				.addAllCamera(this.transformListCam((this.op.getUpdateLogCam())))
+				.build();
+				
+		responseObserver.onNext(response);
+	    responseObserver.onCompleted();
 	}
 	
 	@Override
@@ -104,7 +135,7 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 		try {
 			response = TrackResponse.newBuilder()
 					.setObservation(transform(this.op.track(request.getType(), request.getId())))
-					.addAllNew(this.op.timestampUpdate(request.getPrevList()))
+					.addAllNew(this.op.valueTimestampUpdate(request.getPrevList()))
 					.build();
 			responseObserver.onNext(response);
 		    responseObserver.onCompleted();		
@@ -122,7 +153,7 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 		TrackMatchResponse response = 
 				TrackMatchResponse.newBuilder()
 				.addAllObservation(this.transformList(this.op.trackMatch(request.getType(), request.getId())))
-				.addAllNew(this.op.timestampUpdate(request.getPrevList()))
+				.addAllNew(this.op.valueTimestampUpdate(request.getPrevList()))
 				.build();
 		responseObserver.onNext(response);
 	    responseObserver.onCompleted();
@@ -141,7 +172,7 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 		TraceResponse response = 
 				TraceResponse.newBuilder()
 				.addAllObservation(this.transformList(this.op.trace(request.getType(), request.getId())))
-				.addAllNew(this.op.timestampUpdate(request.getPrevList()))
+				.addAllNew(this.op.valueTimestampUpdate(request.getPrevList()))
 				.build();
 		responseObserver.onNext(response);
 	    responseObserver.onCompleted();
@@ -156,7 +187,7 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 	
 	@Override
 	public void report(ReportRequest request, StreamObserver<ReportResponse> responseObserver) {
-		ReportResponse response = ReportResponse.newBuilder().addAllNew(this.op.timestampUpdate(request.getPrevList())).build();
+		ReportResponse response = ReportResponse.newBuilder().addAllNew(this.op.replicaTimestampUpdate(request.getPrevList())).build();
 		try {
 			this.op.report(request.getName(), this.transformList2(request.getObservationList()));
 			responseObserver.onNext(response);
@@ -172,7 +203,7 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 
 	@Override
 	public void camJoin(CamJoinRequest request, StreamObserver<CamJoinResponse> responseObserver) {
-	  CamJoinResponse response = CamJoinResponse.newBuilder().addAllNew(this.op.timestampUpdate(request.getPrevList())).build();
+	  CamJoinResponse response = CamJoinResponse.newBuilder().addAllNew(this.op.replicaTimestampUpdate(request.getPrevList())).build();
 	  try {
 		this.op.cam_join(request.getName(), request.getCoordinates().getLat(), request.getCoordinates().getLon());
 		responseObserver.onNext(response);
@@ -194,7 +225,7 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 		try {
 			response = CamInfoResponse.newBuilder()
 					  .setCoordinates(this.transformCoord((op.cam_info(request.getName()))))
-					  .addAllNew(this.op.timestampUpdate(request.getPrevList()))
+					  .addAllNew(this.op.valueTimestampUpdate(request.getPrevList()))
 					  .build();
 			responseObserver.onNext(response);
 			responseObserver.onCompleted();
@@ -202,6 +233,10 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 			responseObserver.onError(Status.INVALID_ARGUMENT.withDescription("No camera found with given name!").asRuntimeException());
 		}
 	  }
+	
+	public Operations getOperations() {
+		return op;
+	}
 }
 
 

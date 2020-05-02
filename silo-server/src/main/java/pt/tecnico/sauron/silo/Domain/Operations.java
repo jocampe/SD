@@ -32,17 +32,29 @@ public class Operations {
 	}
 		
 	//verifica se pedido.prev <= value timestamp
-	public synchronized List<Integer> timestampUpdate(List<Integer> prev) {
+	public synchronized List<Integer> valueTimestampUpdate(List<Integer> prev) {
 		for (int i=0; i<prev.size(); i++) {
 			if (prev.get(i) > valueTimestamp.get(i))
 				;    //FICAR PENDENTE
 		}
 		return valueTimestamp;
 	}
+	//incrementa a entrada i
+	public synchronized List<Integer> replicaTimestampUpdate(List<Integer> prev) {
+		int index = 1; 	//este numero corresponde a replica em questao. tem de ser passado como arg
+		Integer value = replicaTimestamp.get(index); // get value
+		value = value + 1; // increment value
+		replicaTimestamp.set(index, value);
+		value = prev.get(index);
+		value = value + 1;
+		prev.set(index, value);
+		return prev;
+	}
+	
+	
 	
 //1 - rever que operacoes fazem realmente update. no update, o metodo acima nao e o chamado. criar outro para incrementar
 //  o replicaTimestamp
-//2 - meter os updates dos comandos nas listas de updates
 //3 - timer e comunicacao replicas a funcionar entre si
 //  No silo server criar metodo de enviar info e receber info usando as listas de update info
 
@@ -101,12 +113,12 @@ public class Operations {
 		   	if(name.length()<3 || name.length()>15) { //FIXME alphanumeric
 		   		throw new InvalidCameraNameException();
 		   	}
-		   	
 		   	Camera cam = _cameras.get(name);
 			if(cam != null) {
 				Instant time = Instant.now();
 				Timestamp timestamp = Timestamp.newBuilder().setSeconds(time.getEpochSecond()).setNanos(time.getNano()).build();
 				for(Observation element : observation ) {
+					updateLogObs.add(element);   //adiciona uma obs a lista de updates
 					if (_objects.get(element.getId()) == null) {
 					//System.out.println("Received :" + element.getCam() + element.getId()+ cam.getLatitude()+ element.getType());
 					Object object2 = new Object(element.getId(), element.getType());
@@ -143,6 +155,7 @@ public class Operations {
 		   	}
 		   	Camera eye = new Camera(name, latitude, longitude);
 		   	_cameras.put(name, eye);
+		   	updateLogCam.add(eye);
 		}
 
 		public synchronized Coordinates cam_info(String name) throws NoSuchCameraException{
@@ -158,6 +171,16 @@ public class Operations {
 			_cameras.remove(name);
 		} 
 		*/
+		
+		public List<Observation> getUpdateLogObs() {
+			return updateLogObs;
+		}
+		public List<Camera> getUpdateLogCam() {
+			return updateLogCam;
+		}
+		public List<Integer> getReplicaTimestamp() {
+			return replicaTimestamp;
+		}
 		public void clear() {
 			_cameras.clear();
 			_objects.clear();

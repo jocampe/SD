@@ -8,18 +8,18 @@ import "google/protobuf/timestamp.proto";
 
 //cam_join - regista uma camera, recebe nome e coordenadas
 
-message Camera {
+message CameraGrpc {
 	string camera = 1;
 	CoordinatesGrpc coordinates = 2;
 	repeated ObservationGrpc observation = 3;
 }
 
-message updateMessage {
+message UpdateMessage {
 	repeated int32 repTS = 1;
 	repeated ObservationGrpc observation = 2;
-	repeated Camera camera = 3;
-	
+	repeated CameraGrpc camera = 3;
 }
+
 
 message ObservationGrpc {
 	string type = 1;
@@ -142,7 +142,7 @@ service SiloService {
   rpc track(TrackRequest) returns (TrackResponse);
   rpc trackMatch(TrackMatchRequest) returns (TrackMatchResponse);
   rpc trace(TraceRequest) returns (TraceResponse);
-
+  rpc updateMessage(UpdateMessage) returns (UpdateMessage);
   
   rpc ping(PingRequest) returns (PingResponse);
   rpc clear(ClearRequest) returns (ClearResponse);

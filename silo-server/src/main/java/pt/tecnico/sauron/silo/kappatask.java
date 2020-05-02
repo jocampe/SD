@@ -5,9 +5,14 @@ import java.util.TimerTask;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import pt.tecnico.sauron.silo.grpc.Silo.CamJoinRequest;
+import pt.tecnico.sauron.silo.grpc.Silo.CamJoinResponse;
+import pt.tecnico.sauron.silo.grpc.Silo.CoordinatesGrpc;
 import pt.tecnico.sauron.silo.grpc.Silo.PingRequest;
 import pt.tecnico.sauron.silo.grpc.Silo.PingResponse;
+import pt.tecnico.sauron.silo.grpc.Silo.UpdateMessage;
 import pt.tecnico.sauron.silo.grpc.SiloServiceGrpc;
+import pt.tecnico.sauron.silo.ServerImpl;
 import pt.ulisboa.tecnico.sdis.zk.ZKNaming;
 import pt.ulisboa.tecnico.sdis.zk.ZKNamingException;
 import pt.ulisboa.tecnico.sdis.zk.ZKRecord;
@@ -79,15 +84,33 @@ public  class kappatask extends TimerTask{
 				target = record.getURI();
 				channel = ManagedChannelBuilder.forTarget(target).usePlaintext().build();
 				stub = SiloServiceGrpc.newBlockingStub(channel);
+				
+				//sendo op, o objeto Operations
+				//recebe o update log da replica i e faz os updates
+				//setUpdates(stub.updateMessage(getUpdates()));
+				
+				
 				PingResponse response = stub.ping(PingRequest.newBuilder().setText("friend").build());
 				System.out.println(response);
+				
+				
 				channel.shutdown();
 			}
 		}
 			
 		} catch (ZKNamingException e) {}
 		
-
-    } 
+    }
+    /*public UpdateMessage getUpdates() {
+    	UpdateMessage request = UpdateMessage.newBuilder()
+    			.addAllRepTS(op.getReplicaTimestamp)
+    			.addAllObservation(op.getUpdateLogObs)
+    			.addAllCamera(op.getUpdateLogCam);
+    			.build();
+    	return request;
+    }
+    public void setUpdates(UpdateMessage response) {
+    	
+    }*/
 }
 
