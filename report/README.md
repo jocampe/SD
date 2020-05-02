@@ -16,8 +16,8 @@ Sistemas Distribuídos 2019-2020, segundo semestre
 | 85320  | 	Joao Pedro     | <https://github.com/Jocampe>     | <joao.nuno.pedro@tecnico.ulisboa.pt>  |
 | 79690  | Tomás Zaki     | <https://github.com/Zakovich> | <tomas.zaki@tecnico.ulisboa.pt>           |
 
-*(usar imagens com 150px de altura; e depois apagar esta linha)*  
-![Alice](alice.png) ![Bob](bob.png) ![Charlie](charlie.png)
+ 
+![Francisco Seixas](Francisco.png) ![Joao Pedro](Joao.png) ![Tomas Zaki](Tomas.png)
 
 
 ## Melhorias da primeira parte
