@@ -84,3 +84,5 @@ Relativamente à tolerância de faltas, a implementação de caches poderia ajud
 -Caches de pedido-resposta
 
 -Caches como réplica parcial
+
+Os testes de integração, embora parcialmente implementados, têm um erro que não permitia a compilação do módulo cliente, pelo que tiveram que ser comentados.
