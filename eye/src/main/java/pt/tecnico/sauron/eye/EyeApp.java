@@ -1,12 +1,16 @@
 package pt.tecnico.sauron.eye;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
 import com.google.protobuf.Timestamp;
 
 import io.grpc.StatusRuntimeException;
+import io.grpc.Status;
 import pt.tecnico.sauron.silo.client.SiloFrontend;
 
 import pt.tecnico.sauron.silo.grpc.Silo.*;
@@ -16,8 +20,7 @@ public class EyeApp {
 	private static final String CMT_CMD = "#";
 	private static final String FLUSH_CMD = "";
 	private static List<ObservationGrpc> _obsList = new ArrayList<>();
-	
-	
+	private static List<Integer> prev;	
 
 	public static void main(String[] args) {
 		System.out.println(EyeApp.class.getSimpleName());
@@ -28,29 +31,46 @@ public class EyeApp {
 			System.out.printf("arg[%d] = %s%n", i, args[i]);
 		}
 		
-		// check arguments
-		if (args.length < 4) {
-			System.out.println("Argument(s) missing!");
-			System.out.printf("Usage: java %s host port%n", EyeApp.class.getName());
-			return;
-		}
+		// check arguments. Must be either 5 or 6.
+				if (args.length < 4) {
+					System.out.println("Argument(s) missing!");
+					System.out.printf("Usage: java %s host port%n", EyeApp.class.getName());
+					return;
+				}
 		
-		final String host = args[0];
-		final int port = Integer.parseInt(args[1]);
-		final String target = host + ":" + port;
+		final String zkhost = args[0];
+		final String zkport = args[1];
 		final String name = args[2];
 		final double latitude = Double.parseDouble(args[3]);
 		final double longitude = Double.parseDouble(args[4]);
-		
-		SiloFrontend frontend = new SiloFrontend(host, port);
+		final String replica;
+		if (args.length == 6)
+			replica = args[5]; 
+		else
+			replica = "0";
+
+		SiloFrontend frontend = new SiloFrontend(zkhost, zkport, replica);
+		prev = new ArrayList<>(Arrays.asList(new Integer[frontend.getRepCount()]));
+		Collections.fill(prev, 0);
 		
 		//cam_join -> login da camera
-		CamJoinRequest request = CamJoinRequest.newBuilder()
-				.setName(name)
-				.setCoordinates(CoordinatesGrpc.newBuilder()
-						.setLat(latitude)
-						.setLon(longitude).build()).build();
-		frontend.camJoin(request);
+		try {
+			CamJoinRequest request = CamJoinRequest.newBuilder()
+					.setName(name)
+					.setCoordinates(CoordinatesGrpc.newBuilder()
+							.setLat(latitude)
+							.setLon(longitude)
+							.build())
+					.addAllPrev(prev)
+					.build();
+			CamJoinResponse response = frontend.camJoin(request);
+			prev = response.getNewList();
+
+		}
+		catch (StatusRuntimeException e) {
+			System.out.println("Caught Exception with description" + e.getStatus().getDescription());
+		}
+		
 		
 		try(Scanner scanner = new Scanner(System.in)) {
 			  // Check if camera doesn't exist frontend.getCamera(name);
@@ -75,11 +95,22 @@ public class EyeApp {
 			      
 			      //report -> envia observacoes para o servidor
 			      else if (FLUSH_CMD.equals(array[0])) {
+			    	  try {
 			    	  ReportRequest rRequest = ReportRequest.newBuilder()
 			    			  .setName(name)
-			    			  .addAllObservation(_obsList).build();
-			    	  frontend.report(rRequest);
+			    			  .addAllObservation(_obsList)
+			    			  .addAllPrev(prev)
+			    			  .build();
+			    	  ReportResponse response = frontend.report(rRequest);
+			    	  //update prev
+			    	  prev = response.getNewList();
 			    	  _obsList.clear();
+			    	  }
+			    	  catch (StatusRuntimeException e) {
+			    	        Status status = e.getStatus();
+			    	        System.out.println(status.getDescription());
+			    	   }
+			    	  
 			          continue;
 			      }
 			      
