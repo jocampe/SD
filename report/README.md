@@ -55,7 +55,7 @@ Através do FrontEnd, o cliente conhece todas as réplicas activas. Sempre que �
 Por outro lado, se a comunicação entre réplicas falha, a réplica que está a fazer o update, não deverá tentar actualizar a réplica que falhou. 
 
 ## Protocolo de replicação
-
+![Gossip](gossip.png)
 O protocolo de replicação escolhido é um semelhante ao Gossip. O Gossip é um protocolo de replicação fracamente coerente, ou seja, a troco de menor coerência, é oferecido alta disponibilidade aos clientes. 
 No Gossip, a actualização das réplicas é feito, periodicamente, em background, ou seja, a informação é actualizada entre réplicas discretamente. 
 É mantido um timestamp vectorial, um vector de inteiros que reflete a última versão que o cliente acedeu.
