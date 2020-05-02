@@ -47,7 +47,7 @@ No segundo caso, caso uma réplica tente enviar uma actualização de informaç�
 ## Solução
 
 _(Figura da solução de tolerância a faltas)_
-!(fault.png)
+![Fault](fault.png)
 
 _(Breve explicação da solução, suportada pela figura anterior)_
 Através do FrontEnd, o cliente conhece todas as réplicas activas. Sempre que é feito um pedido, este é enviado para a réplica mais "próxima". Quando a comunicação entre estes falha (seja devido a uma falha no canal de comunicação, seja por falha da réplica em si) o cliente comunica com a seguinte réplica mais próxima.
