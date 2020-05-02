@@ -25,7 +25,7 @@
 		<server.host>localhost</server.host>
 		<instance>1</instance>
 		<server.port>808${instance}</server.port>
-		<server.path>${instance}</server.path>
+		<server.path>/grpc/sauron/silo/${instance}</server.path>
 		
 	</properties>
 	

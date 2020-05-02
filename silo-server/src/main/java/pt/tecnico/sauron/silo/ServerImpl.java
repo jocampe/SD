@@ -187,7 +187,7 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 	
 	@Override
 	public void report(ReportRequest request, StreamObserver<ReportResponse> responseObserver) {
-		ReportResponse response = ReportResponse.newBuilder().addAllNew(this.op.replicaTimestampUpdate(request.getPrevList())).build();
+		ReportResponse response = ReportResponse.newBuilder().addAllNew(this.op.valueTimestampUpdate(request.getPrevList())).build();
 		try {
 			this.op.report(request.getName(), this.transformList2(request.getObservationList()));
 			responseObserver.onNext(response);
@@ -203,7 +203,7 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 
 	@Override
 	public void camJoin(CamJoinRequest request, StreamObserver<CamJoinResponse> responseObserver) {
-	  CamJoinResponse response = CamJoinResponse.newBuilder().addAllNew(this.op.replicaTimestampUpdate(request.getPrevList())).build();
+	  CamJoinResponse response = CamJoinResponse.newBuilder().addAllNew(this.op.valueTimestampUpdate(request.getPrevList())).build();
 	  try {
 		this.op.cam_join(request.getName(), request.getCoordinates().getLat(), request.getCoordinates().getLon());
 		responseObserver.onNext(response);
@@ -238,7 +238,3 @@ public class ServerImpl extends SiloServiceGrpc.SiloServiceImplBase {
 		return op;
 	}
 }
-
-
-
-

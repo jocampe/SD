@@ -21,8 +21,8 @@ public class Operations {
 	private Map<String,Camera> _cameras = new TreeMap<>();
 	private List<Integer> valueTimestamp = new ArrayList<>(Arrays.asList(new Integer[4]));
 	
-	private List<Observation> updateLogObs;
-	private List<Camera> updateLogCam;
+	private List<Observation> updateLogObs = new ArrayList<>();
+	private List<Camera> updateLogCam = new ArrayList<>();
 	private List<Integer> replicaTimestamp;
 	
 	public Operations() {

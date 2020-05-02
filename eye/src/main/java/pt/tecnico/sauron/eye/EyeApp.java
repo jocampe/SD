@@ -71,7 +71,7 @@ public class EyeApp {
 			System.out.println("Caught Exception with description" + e.getStatus().getDescription());
 		}
 		
-		System.out.println("eye input");
+		
 		try(Scanner scanner = new Scanner(System.in)) {
 			  // Check if camera doesn't exist frontend.getCamera(name);
 			  while(true) {
