@@ -17,7 +17,7 @@ import pt.ulisboa.tecnico.sdis.zk.ZKNaming;
 import pt.ulisboa.tecnico.sdis.zk.ZKNamingException;
 import pt.ulisboa.tecnico.sdis.zk.ZKRecord;
 
-public  class kappatask extends TimerTask{ 
+public  class gossip extends TimerTask{ 
 	public String _zooHost;
 	public String _zooPort;
 	public String _path;
@@ -28,7 +28,7 @@ public  class kappatask extends TimerTask{
 	public int _curr;
 	
 	
-	public kappatask(String zooHost, String zooPort, String path, ZKNaming zkNaming, int curr) {
+	public gossip(String zooHost, String zooPort, String path, ZKNaming zkNaming, int curr) {
 		this._zooHost = zooHost;
 		this._zooPort = zooPort;
 		this._path = path;
