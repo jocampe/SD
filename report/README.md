@@ -37,17 +37,22 @@ Falhas Arbitrárias ou Bizantinas, faltas Densas e faltas Silenciosas. Destas tr
 No caso do nosso projecto isto traduz-se em dois tipos de falhas:
 
 -Comunicação cliente-réplica
+
 -Comunicação réplica-réplica
-No primeiro caso, caso um cliente faça um pedido, poderá acontecer que a réplica que este tenta comunicar não responde ao pedido efectuado. Pode acontecer dado a uma falha no canal de comunicação ou caso a réplica (figure it out)
-No segundo caso, caso uma réplica tente enviar uma actualização de informação a outra réplica e esta não receba a informação. Semelhante ao caso anterior, isto pode acontecer dado a uma falha dos canais de comunicação
+
+No primeiro caso, caso um cliente faça um pedido, poderá acontecer que a réplica que este tenta comunicar não responde ao pedido efectuado. Pode acontecer dado a uma falha no canal de comunicação ou caso a réplica falhe.
+No segundo caso, caso uma réplica tente enviar uma actualização de informação a outra réplica e esta não receba a informação. Semelhante ao caso anterior, isto pode acontecer dado a uma falha dos canais de comunicação ou de falha de uma réplica.
 
 
 ## Solução
 
 _(Figura da solução de tolerância a faltas)_
+(fault.png)
 
 _(Breve explicação da solução, suportada pela figura anterior)_
+Através do FrontEnd, o cliente conhece todas as réplicas activas. Sempre que é feito um pedido, este é enviado para a réplica mais "próxima". Quando a comunicação entre estes falha (seja devido a uma falha no canal de comunicação, seja por falha da réplica em si) o cliente comunica com a seguinte réplica mais próxima.
 
+Por outro lado, se a comunicação entre réplicas falha, a réplica que está a fazer o update, não deverá tentar actualizar a réplica que falhou. 
 
 ## Protocolo de replicação
 
@@ -76,4 +81,8 @@ Para fins de optimização de gestão de nomes e de sincronização deste sistem
 
 ## Notas finais
 
-_(Algo mais a dizer?)_
+Relativamente à tolerância de faltas, a implementação de caches poderia ajudar a atenuar esse problema. Uma de duas linhas seria possível:
+
+-Caches de pedido-resposta
+
+-Caches como réplica parcial
