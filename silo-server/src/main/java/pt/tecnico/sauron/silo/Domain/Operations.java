@@ -31,6 +31,7 @@ public class Operations {
 		replicaTimestamp = valueTimestamp;
 	}
 		
+
 	//verifica se pedido.prev <= value timestamp
 	public synchronized List<Integer> valueTimestampUpdate(List<Integer> prev) {
 		for (int i=0; i<prev.size(); i++) {
@@ -79,7 +80,7 @@ public class Operations {
 		if(object.getType() != type) {
 			throw new WrongTypeException();
 		}
-		
+
 		List<Observation> lst = new ArrayList<>();
 
 		int index = id.indexOf('*');
@@ -93,7 +94,9 @@ public class Operations {
 		return lst;
 	}
 	
-	//a ordenacao e so fazer print ao ultimo ao primeiro membro da lista
+
+	//Trace - Permite obter o rasto de um objeto observado
+	//a ordenacao consiste em fazer print ao ultimo ao primeiro membro da lista
 	public Iterable<?extends Observation> trace(String type, String id) throws NoSuchObjectException, WrongTypeException {
 		Object object = _objects.get(id);
 		if(object == null) {
@@ -106,9 +109,8 @@ public class Operations {
 		
 	}
 	
-
+  //Report - recebe observacoes, registando as mesmas
 	public void report (String name, Iterable<?extends Observation>observation) throws NoSuchCameraException, InvalidCameraNameException{
-		
 			
 		   	if(name.length()<3 || name.length()>15) { //FIXME alphanumeric
 		   		throw new InvalidCameraNameException();
@@ -144,7 +146,9 @@ public class Operations {
 			
 	}
 
+  //Cam_join - regista uma camera
 	public synchronized void cam_join(String name, double latitude, double longitude) throws InvalidCameraNameException, DuplicateCameraException{
+
 		   	if(name.length()<3 || name.length()>15) { //FIXME alphanumeric
 		   		throw new InvalidCameraNameException();
 		   		
@@ -158,6 +162,7 @@ public class Operations {
 		   	updateLogCam.add(eye);
 		}
 
+    //Cam_info - recebe o nome de uma camera e devolve as suas coordenadas de localizacao
 		public synchronized Coordinates cam_info(String name) throws NoSuchCameraException{
 			if(_cameras.get(name).equals(null)) {
 				throw new NoSuchCameraException();

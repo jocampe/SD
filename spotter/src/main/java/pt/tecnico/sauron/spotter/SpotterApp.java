@@ -53,9 +53,9 @@ public class SpotterApp {
 				try {
 					String line = scanner.nextLine();
 					String[] arrOfStr = line.split(" "); 
-					
+					//Help command
 					if (HELP_CMD.equals(arrOfStr[0])) {System.out.println("Available commands: spot, trail;");}
-					
+					//Spot command
 					else if (SPOT_CMD.equals(arrOfStr[0])) {
 						
 						//verificar se tem *
@@ -117,6 +117,7 @@ public class SpotterApp {
 							
 						}
 					}
+
 					//Comando trail (trace)
 					if (TRAIL_CMD.equals(arrOfStr[0])) {
 						try {
@@ -139,6 +140,7 @@ public class SpotterApp {
 										response.getObservation(i).getCamera() + "," +
 										camInfoResponse.getCoordinates().getLat() + "," + 
 										camInfoResponse.getCoordinates().getLon());
+
 						}
 						} catch (StatusRuntimeException e) {
 			    	        Status status = e.getStatus();
