@@ -34,6 +34,7 @@ _(que correções ou melhorias foram feitas ao código da primeira parte -- incl
 Existem 3 tipos de faltas que um sistema distribuído pode sofrer. 
 Falhas Arbitrárias ou Bizantinas, faltas Densas e faltas Silenciosas. Destas três falhas, o sistema só irá tolerar falhas silenciosas, isto é, quando uma componente falhas que provocam uma paragem e não resposta da componente que sofreu a falta.
 No caso do nosso projecto isto traduz-se em dois tipos de falhas:
+
 -Comunicação cliente-réplica
 -Comunicação réplica-réplica
 No primeiro caso, caso um cliente faça um pedido, poderá acontecer que a réplica que este tenta comunicar não responde ao pedido efectuado. Pode acontecer dado a uma falha no canal de comunicação ou caso a réplica (figure it out)
