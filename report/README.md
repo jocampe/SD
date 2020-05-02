@@ -25,7 +25,7 @@ Sistemas Distribuídos 2019-2020, segundo semestre
 _(que correções ou melhorias foram feitas ao código da primeira parte -- incluir link para commits no GitHub onde a alteração foi feita)_
 
 - [Fix da função trace](https://github.com/tecnico-distsys/A05-Sauron/commit/74cc2c0d91f2f4986c9b2244ae995f106d1ac5f5)
-- [Ordenação das Observações no comando trace] (https://github.com/tecnico-distsys/A05-Sauron/commit/74cc2c0d91f2f4986c9b2244ae995f106d1ac5f5)
+- [Ordenação das Observações no comando trace](https://github.com/tecnico-distsys/A05-Sauron/commit/74cc2c0d91f2f4986c9b2244ae995f106d1ac5f5)
 - [Adicionadas exceções](https://github.com/tecnico-distsys/A05-Sauron/commit/a68bc60ed5657eb47b741df4009044dc59a4931e)
 - [Adicionadas exceções2](https://github.com/tecnico-distsys/A05-Sauron/commit/cae3cedf80e120cfd362a764e3365843121b50e1)
 - [Adicionado testes de integração](https://github.com/tecnico-distsys/A05-Sauron/commit/cae3cedf80e120cfd362a764e3365843121b50e1)
