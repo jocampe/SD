@@ -25,6 +25,7 @@ Sistemas Distribuídos 2019-2020, segundo semestre
 _(que correções ou melhorias foram feitas ao código da primeira parte -- incluir link para commits no GitHub onde a alteração foi feita)_
 
 - [Fix da função trace](https://github.com/tecnico-distsys/A05-Sauron/commit/74cc2c0d91f2f4986c9b2244ae995f106d1ac5f5)
+- [Ordenação das Observações no comando trace] (https://github.com/tecnico-distsys/A05-Sauron/commit/74cc2c0d91f2f4986c9b2244ae995f106d1ac5f5)
 - [Adicionadas exceções](https://github.com/tecnico-distsys/A05-Sauron/commit/a68bc60ed5657eb47b741df4009044dc59a4931e)
 - [Adicionadas exceções2](https://github.com/tecnico-distsys/A05-Sauron/commit/cae3cedf80e120cfd362a764e3365843121b50e1)
 - [Adicionado testes de integração](https://github.com/tecnico-distsys/A05-Sauron/commit/cae3cedf80e120cfd362a764e3365843121b50e1)
@@ -63,7 +64,13 @@ Para fins de optimização de gestão de nomes e de sincronização deste sistem
 
 ## Opções de implementação
 
-_(Descrição de opções de implementação, incluindo otimizações e melhorias introduzidas)_
+- Definimos que o número de réplicas será 4. O cliente não conhece este valor inicialmente, por isso usamos o listRecords para encontrar este número.
+- Assumimos que o zookeeper nunca falha.
+- Quando um cliente é inicializado, ele liga-se a uma réplica. Se não a conseguir contactar por alguma razão, falha.
+- Criamos um “vetor timestamp” que é enviado e recebido pelos clientes ao fazer uma consulta ou update para assegurar que os estes, recebam um valor (no caso da leitura) ou guardem um valor (no caso do update) atual.
+- Nas réplicas, guardamos também um “vetor timestamp”, que vai ter, tal como no cliente, a versão mais atualizada de cada uma das outras réplicas registadas no zookeeper. Em cada pedido de leitura do cliente, estes dois vetores são comparados para garantir que o cliente vai receber o valor mais atualizado.
+- Para fazer o gossip entre réplicas, usamos uma estrutura de dados, updateLog, e mais um “vetor timestamp”. Periodicamente estes são enviados e recebidos pelas réplicas vizinhas, propagando assim os updates que cada réplica tinha recebido individualmente de um cliente. Posteriormente, as réplicas executam os updates recebidos umas das outras e o updateLog é apagado, ficando a réplica num estado atualizado.
+- Não chegamos a implementar leituras coerentes por cliente. Neste caso a solução passava por ter uma cache do cliente.
 
 
 
