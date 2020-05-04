@@ -110,7 +110,7 @@ public class EyeApp {
 			    	        Status status = e.getStatus();
 			    	        System.out.println(status.getDescription());
 			    	   }
-			    	  
+			    	  System.out.println("--- report sent ---");
 			          continue;
 			      }
 			      

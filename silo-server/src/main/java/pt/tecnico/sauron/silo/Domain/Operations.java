@@ -64,9 +64,6 @@ public class Operations {
 		if(object == null) {
 			throw new NoSuchObjectException();
 		}
-		if(object.getType() != type) {
-			throw new WrongTypeException();
-		}
 		return _objects.get(id).getLastObservation();
 	}
 	
@@ -77,10 +74,6 @@ public class Operations {
 			throw new NoSuchObjectException();
 		}
 		
-		if(object.getType() != type) {
-			throw new WrongTypeException();
-		}
-
 		List<Observation> lst = new ArrayList<>();
 
 		int index = id.indexOf('*');
@@ -101,9 +94,6 @@ public class Operations {
 		Object object = _objects.get(id);
 		if(object == null) {
 			throw new NoSuchObjectException();
-		}
-		if(object.getType() != type) {
-			throw new WrongTypeException();
 		}
 		return object.getObservationList();
 		
